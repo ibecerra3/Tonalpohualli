@@ -135,14 +135,12 @@ def nemontemi_adjusted_delta(target_date):
 
 def trecena_info(adjusted_delta):
     trecena_index = adjusted_delta // 13
-    trecena_number = (trecena_index % 20) + 1
 
     trecena_start_delta = trecena_index * 13
     trecena_start_sign = day_sign(trecena_start_delta)
 
     return {
-        "trecena_number": trecena_number,
-        "trecena_start_sign": trecena_start_sign
+        "trecena_name": f"Ce {trecena_start_sign}"
     }
 
 # ---------------------------
@@ -159,8 +157,7 @@ def calculate_date(target_date):
             "day_sign": "Nemontemi",
             "day_god": "None",
             "lord_of_night": "None",
-            "trecena_number": None,
-            "trecena_start_sign": None,
+            "trecena": None,
             "trecena_ruling_god": None
         }
 
@@ -175,8 +172,7 @@ def calculate_date(target_date):
         "day_sign": sign,
         "day_god": DAY_GODS.get(sign, "Unknown"),
         "lord_of_night": lord_of_night(delta),
-        "trecena_number": trecena["trecena_number"],
-        "trecena_start_sign": trecena["trecena_start_sign"],
+        "trecena": trecena["trecena_name"],
         "trecena_ruling_god": None
     }
 
@@ -190,7 +186,7 @@ def print_tonalpohualli(result):
     print(f"Day Sign: {result['day_sign']}")
     print(f"Day God: {result['day_god']}")
     print(f"Lord of Night: {result['lord_of_night']}")
-    print(f"Trecena Number: {result['trecena_number']}")
+    print(f"Trecena: {result['trecena']}")
     print(f"Trecena Ruling God: {result['trecena_ruling_god']}")
     print("-" * 40)
 
