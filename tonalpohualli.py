@@ -49,12 +49,29 @@ DAY_GODS = {
 
 ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI"]
 
-TRECENA_GODS = [
-    "Cipactli God", "Ehecatl God", "Calli God", "Cuetzpalin God", "Coatl God",
-    "Miquiztli God", "Mazatl God", "Tochtli God", "Atl God", "Itzcuintli God",
-    "Ozomahtli God", "Malinalli God", "Acatl God", "Ocelotl God", "Cuauhtli God",
-    "Cozcacuauhtli God", "Ollin God", "Tecpatl God", "Quiahuitl God", "Xochitl God"
-]
+TRECENA_RULING_GODS = {
+    "Cipactli": ["Tonacatecuhtli", "Tonacaccihuatl"],
+    "Ocelotl": ["Quetzalcoatl"],
+    "Mazatl": ["Tepeyollotl", "Quetzalcoatl", "Tlazolteotl"],
+    "Xochitl": ["Huehuecoyotl", "Ixnextli"],
+    "Acatl": ["Chalchihuitlicue", "Tlazolteotl"],
+    "Miquiztli": ["Tonatiuh", "Tecciztecatl"],
+    "Quiahuitl": ["Tlaloc", "Chicomecoatl"],
+    "Malinalli": ["Mayahuel", "Xochipilli", "Cinteotl"],
+    "Coatl": ["Xiuhtecuhtli", "Tlahuizcalpantecuhtli"],
+    "Tecpatl": ["Mictlantecuhtli", "Tonatiuh"],
+    "Ozomahtli": ["Patecatl"],
+    "Cuetzpalin": ["Itzlacoliuhqui"],
+    "Ollin": ["Tlazolteotl"],
+    "Itzcuintli": ["Xipe Totec"],
+    "Calli": ["Itzpapalotl"],
+    "Cozcacuauhtli": ["Xolotl", "Tlalchitonatiuh"],
+    "Atl": ["Chalchihuihtotolin"],
+    "Ehecatl": ["Chantico"],
+    "Cuauhtli": ["Xochiquetzal"],
+    "Tochtli": ["Xiuhtecuhtli", "Itztapaltotec"]
+}
+
 
 # ---------------------------
 # Anchor Date
@@ -76,8 +93,20 @@ def day_sign(delta_days):
     return DAY_SIGNS[index]
 
 def lord_of_night(delta_days):
-    index = (ANCHOR_LORD_INDEX + delta_days) % 9
+    """
+    Lords of Night cycle resets every 1 Cipactli (start of the 260-day tonalpohualli cycle).
+    """
+    # Find how many full 260-day cycles have passed
+    cycle_offset = delta_days % 260
+
+    # Determine the number of days since the last 1 Cipactli
+    # 1 Cipactli is always delta = 0 in the cycle
+    days_since_1_cipactli = cycle_offset
+
+    # Lords of night cycle every 9 days
+    index = days_since_1_cipactli % 9
     return LORDS_OF_NIGHT[index]
+
 
 # ---------------------------
 # Nemontemi-Adjusted Delta
@@ -140,8 +169,21 @@ def trecena_info(adjusted_delta):
     trecena_start_sign = day_sign(trecena_start_delta)
 
     return {
-        "trecena_name": f"Ce {trecena_start_sign}"
+        "trecena_name": f"Ce {trecena_start_sign}",
+        "trecena_start_sign": trecena_start_sign,
     }
+
+# ---------------------------
+# Trecena Gods Formating Helper
+# ---------------------------
+
+def format_ruling_gods(gods_list):
+    if not gods_list:
+        return "None"
+    if len(gods_list) == 1:
+        return gods_list[0]
+    return f"{gods_list[0]} ({', '.join(gods_list[1:])})"
+
 
 # ---------------------------
 # Main Calculation Function
@@ -165,6 +207,8 @@ def calculate_date(target_date):
     sign = day_sign(delta)
 
     trecena = trecena_info(delta)
+    ruling_gods_list = TRECENA_RULING_GODS.get(trecena["trecena_start_sign"])
+    ruling_gods_display = format_ruling_gods(ruling_gods_list)
 
     return {
         "gregorian_date": target_date.isoformat(),
@@ -173,7 +217,7 @@ def calculate_date(target_date):
         "day_god": DAY_GODS.get(sign, "Unknown"),
         "lord_of_night": lord_of_night(delta),
         "trecena": trecena["trecena_name"],
-        "trecena_ruling_god": None
+        "trecena_ruling_god": ruling_gods_display
     }
 
 # ---------------------------
@@ -197,9 +241,8 @@ def print_tonalpohualli(result):
 if __name__ == "__main__":
     test_dates = [
         date(1506, 3, 13),
-        date(1507, 3, 8),
-        date(1507, 3, 13),
-        date(2025, 1, 11),
+        date(1507, 3, 7),
+        date(2026, 1, 23),
     ]
 
     for d in test_dates:
