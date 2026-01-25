@@ -226,12 +226,12 @@ def calculate_date(target_date):
 
 def print_tonalpohualli(result):
     print(f"Gregorian Date: {result['gregorian_date']}")
-    print(f"Tonal Number: {result['tonal_number']}")
-    print(f"Day Sign: {result['day_sign']}")
-    print(f"Day God: {result['day_god']}")
-    print(f"Lord of Night: {result['lord_of_night']}")
+    print(f"Numeral: {result['tonal_number']}")
+    print(f"Signo de Dia: {result['day_sign']}")
     print(f"Trecena: {result['trecena']}")
-    print(f"Trecena Ruling God: {result['trecena_ruling_god']}")
+    print(f"Dios del Dia: {result['day_god']}")
+    print(f"Señor de la Noche: {result['lord_of_night']}")
+    print(f"Dios de la Trecena: {result['trecena_ruling_god']}")
     print("-" * 40)
 
 # ---------------------------
