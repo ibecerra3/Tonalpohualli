@@ -5,6 +5,7 @@ from tonalpohualli.constants import (
 )
 from tonalpohualli.nemontemi import nemontemi_adjusted_delta
 from tonalpohualli.helpers import format_ruling_gods
+from tonalpohualli.xiuhpohualli import xiuhpohualli_info
 
 # ---------------------------
 # Tonalpohualli Core Functions
@@ -44,6 +45,7 @@ def trecena_info(adjusted_delta):
 
 def calculate_date(target_date):
     result = nemontemi_adjusted_delta(target_date)
+    xiuh = xiuhpohualli_info(target_date)
 
     if result["is_nemontemi"]:
         return {
@@ -53,7 +55,9 @@ def calculate_date(target_date):
             "day_god": "N/A",
             "lord_of_night": "N/A",
             "trecena": None,
-            "trecena_ruling_god": None
+            "trecena_ruling_god": None,
+            "veintena": xiuh["veintena"],
+            "day_in_veintena": xiuh["day_in_veintena"]
         }
 
     delta = result["adjusted_delta"]
@@ -70,5 +74,7 @@ def calculate_date(target_date):
         "day_god": DAY_GODS.get(sign, "Unknown"),
         "lord_of_night": lord_of_night(delta),
         "trecena": trecena["trecena_name"],
-        "trecena_ruling_god": ruling_gods_display
+        "trecena_ruling_god": ruling_gods_display,
+        "veintena": xiuh["veintena"],
+        "day_in_veintena": xiuh["day_in_veintena"]
     }

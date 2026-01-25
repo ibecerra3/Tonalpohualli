@@ -57,3 +57,52 @@ def nemontemi_adjusted_delta(target_date):
 
     adjusted_delta = total_days - skipped_days
     return {"is_nemontemi": False, "adjusted_delta": adjusted_delta}
+
+
+def xiuhpohualli_year_context(target_date):
+    """
+    Returns Xiuhpohualli (solar-year) context relative to ANCHOR_DATE:
+
+    - years_since_anchor: 0 for the anchor year, 1 for next, etc.
+    - day_in_year: 0-based day index within the current xiuhpohualli year
+    - year_length: 365 or 366 (depending on 6th nemontemi rule)
+    - nemontemi_length: 5 or 6
+    - is_nemontemi: True if day_in_year >= 360
+    - nemontemi_day_index: 0..(nemontemi_length-1) if is_nemontemi else None
+    """
+    total_days = (target_date - ANCHOR_DATE).days
+    years_since_anchor = 0
+    days_remaining = total_days
+
+    while True:
+        year_length = 360 + 5
+        if (years_since_anchor + 1) % 4 == 0 and (years_since_anchor + 1) % 128 != 0:
+            year_length += 1
+
+        if days_remaining < year_length:
+            break
+
+        days_remaining -= year_length
+        years_since_anchor += 1
+
+    nemontemi_length = 5
+    if (years_since_anchor + 1) % 4 == 0 and (years_since_anchor + 1) % 128 != 0:
+        nemontemi_length = 6
+
+    year_length = 360 + nemontemi_length
+
+    is_nemontemi = days_remaining >= 360
+    nemontemi_day_index = None
+    if is_nemontemi:
+        nemontemi_day_index = days_remaining - 360
+        if nemontemi_day_index >= nemontemi_length:
+            nemontemi_day_index = nemontemi_length - 1
+
+    return {
+        "years_since_anchor": years_since_anchor,
+        "day_in_year": days_remaining,
+        "year_length": year_length,
+        "nemontemi_length": nemontemi_length,
+        "is_nemontemi": is_nemontemi,
+        "nemontemi_day_index": nemontemi_day_index
+    }

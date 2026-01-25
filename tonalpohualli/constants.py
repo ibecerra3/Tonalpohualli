@@ -69,6 +69,28 @@ TRECENA_RULING_GODS = {
     "Tochtli": ["Xiuhtecuhtli", "Itztapaltotec"]
 }
 
+# Xiuhpohualli: 18 veintenas of 20 days (names vary by source; this is a common set)
+VEINTENAS = [
+    "Atlcahualo",
+    "Tlacaxipehualiztli",
+    "Tozoztontli",
+    "Hueytozoztli",
+    "Toxcatl",
+    "Etzalcualiztli",
+    "Tecuilhuitontli",
+    "Hueytecuilhuitl",
+    "Tlaxochimaco",
+    "Xocotlhuetzi",
+    "Ochpaniztli",
+    "Teotleco",
+    "Tepeilhuitl",
+    "Quecholli",
+    "Panquetzaliztli",
+    "Atemoztli",
+    "Tititl",
+    "Izcalli"
+]
+
 # Anchor
 ANCHOR_DATE = date(1506, 3, 13)
 ANCHOR_NUMBER = 1

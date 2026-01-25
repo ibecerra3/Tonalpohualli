@@ -11,16 +11,23 @@ def format_ruling_gods(gods_list):
 def print_tonalpohualli(result):
     print(f"Fecha Gregoriana: {result['gregorian_date']}")
 
-    # If it's a Nemontemi day, print ONLY Nemontemi info and exit
+    # Nemontemi: ONLY show nemontemi label/number and hide everything else
     if result.get("day_sign") == "Nemontemi":
-        print(f"Día Nemontemi: {result.get('tonal_number', 'N/A')}")
+        print(f"Nemontemi: {result.get('tonal_number', 'N/A')}")
         print("-" * 40)
         return
 
-    # Normal Tonalpohualli day
-    print(f"Número Tonal: {result['tonal_number']}")
-    print(f"Signo del Día: {result['day_sign']}")
+    # Normal day output
+    print(f"Número Tonal: {result.get('tonal_number', 'N/A')}")
+    print(f"Signo del Día: {result.get('day_sign', 'N/A')}")
     print(f"Trecena: {result.get('trecena', 'N/A')}")
+
+    # Xiuhpohualli / Veintena immediately after Trecena
+    if result.get("veintena") is not None:
+        print(f"Veintena: {result.get('veintena', 'N/A')}")
+    if result.get("day_in_veintena") is not None:
+        print(f"Día en Veintena: {result.get('day_in_veintena', 'N/A')}")
+
     print(f"Regente del Día: {result.get('day_god', 'N/A')}")
     print(f"Señor de la Noche: {result.get('lord_of_night', 'N/A')}")
     print(f"Regente de la Trecena: {result.get('trecena_ruling_god', 'N/A')}")
