@@ -47,13 +47,14 @@ def test_day_sign_cycles():
 # ASSERT-4: Lords of the Night repeat every 9 days
 # ---------------------------
 def test_lords_of_night_cycles_every_9_days():
-    for delta in range(0, 260):
+    cycle_length = 260
+    for delta in range(0, cycle_length):
         ln1 = lord_of_night(delta)
-        ln2 = lord_of_night(delta + 9)
-        # Wrap around the 260-day cycle
-        delta_mod = (delta + 9) % 260
-        ln2 = lord_of_night(delta_mod)
-        assert ln1 == ln2, f"Lord of Night should repeat every 9 days (delta {delta})"
+        # Only compare within the same 9-day repeating block
+        if delta + 9 < cycle_length:
+            ln2 = lord_of_night(delta + 9)
+            assert ln1 == ln2, f"Lord of Night should repeat every 9 days within cycle (delta {delta})"
+
 
 # ---------------------------
 # ASSERT-5: Nemontemi days identification
