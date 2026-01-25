@@ -1,5 +1,7 @@
 # tonalpohualli/constants.py
 
+from datetime import date
+
 DAY_SIGNS = [
     "Cipactli", "Ehecatl", "Calli", "Cuetzpalin", "Coatl",
     "Miquiztli", "Mazatl", "Tochtli", "Atl", "Itzcuintli",

@@ -2,18 +2,19 @@
 
 def format_ruling_gods(gods_list):
     if not gods_list:
-        return "None"
+        return "Ninguno"
     if len(gods_list) == 1:
         return gods_list[0]
     return f"{gods_list[0]} ({', '.join(gods_list[1:])})"
 
 
 def print_tonalpohualli(result):
-    print(f"Gregorian Date: {result['gregorian_date']}")
-    print(f"Tonal Number: {result['tonal_number']}")
-    print(f"Day Sign: {result['day_sign']}")
-    print(f"Day God: {result['day_god']}")
-    print(f"Lord of Night: {result['lord_of_night']}")
-    print(f"Trecena: {result['trecena']}")
-    print(f"Trecena Ruling God: {result['trecena_ruling_god']}")
+    print(f"Fecha Gregoriana: {result['gregorian_date']}")
+    print(f"Número Tonal: {result['tonal_number']}")
+    print(f"Signo del Día: {result['day_sign']}")
+    print(f"Trecena: {result.get('trecena', 'N/A')}")
+    print(f"Dios Regente del Día: {result.get('day_god', 'N/A')}")
+    print(f"Señor de la Noche: {result.get('lord_of_night', 'N/A')}")
+    print(f"Dios Regente de la Trecena: {result.get('trecena_ruling_god', 'N/A')}")
     print("-" * 40)
+
