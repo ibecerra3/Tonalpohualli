@@ -70,13 +70,29 @@ TRECENA_RULING_GODS = {
 }
 
 # ---------------------------
-# Veintena ruling gods (Xiuhpohualli) — placeholder table
-# Fill this later with your official list
+# Veintena ruling gods (Xiuhpohualli)
 # ---------------------------
 VEINTENA_RULING_GODS = {
-    # "NombreDeVeintena": ["Dios Principal"],
-    # "OtraVeintena": ["Dios Principal", "Dios Secundario", "Otro Secundario"],
+    "Atlcahualo": ["Tlaloc", "Chalchiuhtlicue"],
+    "Tlacaxipehualiztli": ["Xipe Totec"],
+    "Tozoztontli": ["Coatlicue", "Tlaloc"],
+    "Huey Tozoztli": ["Cinteotl", "Chicomecoatl"],
+    "Toxcatl": ["Tezcatlipoca", "Huitzilopochtli"],
+    "Etzalcualiztli": ["Tlaloc"],
+    "Tecuilhuitontli": ["Huixtocihuatl"],
+    "Huey Tecuilhuitl": ["Xilonen"],
+    "Tlaxochimaco (Miccailhuitontli)": ["Huitzilopochtli"],
+    "Xocotlhuetzi": ["Xiuhtecuhtli"],
+    "Ochpaniztli": ["Toci"],
+    "Teotleco": ["Todos los dioses"],
+    "Tepeilhuitl": ["Tlaloc", "Dioses de los cerros"],
+    "Quecholli": ["Mixcoatl"],
+    "Panquetzaliztli": ["Huitzilopochtli"],
+    "Atemoztli": ["Tlaloc"],
+    "Tititl": ["Cihuacoatl"],
+    "Izcalli": ["Xiuhtecuhtli"],
 }
+
 
 # Anchor
 ANCHOR_DATE = date(1506, 3, 13)
