@@ -10,25 +10,36 @@ def format_ruling_gods(gods_list):
 
 def print_tonalpohualli(result):
     print(f"Fecha Gregoriana: {result['gregorian_date']}")
+    print(f"Número Tonal: {result['tonal_number']}")
+    print(f"Signo del Día: {result['day_sign']}")
 
-    # Nemontemi: ONLY show nemontemi label/number and hide everything else
-    if result.get("day_sign") == "Nemontemi":
-        print(f"Nemontemi: {result.get('tonal_number', 'N/A')}")
+    # Nemontemi: hide everything that doesn't apply
+    if result.get("day_sign") == "Nemontemi" or result.get("is_nemontemi") is True:
+        # Only print what makes sense for nemontemi
+        # (You can add nemontemi-specific veintena labeling later if you want)
         print("-" * 40)
         return
 
-    # Normal day output
-    print(f"Número Tonal: {result.get('tonal_number', 'N/A')}")
-    print(f"Signo del Día: {result.get('day_sign', 'N/A')}")
-    print(f"Trecena: {result.get('trecena', 'N/A')}")
+    # Normal days
+    if result.get("trecena") is not None:
+        print(f"Trecena: {result['trecena']}")
 
-    # Xiuhpohualli / Veintena immediately after Trecena
+    # Veintena section (after Trecena, per your requirement)
     if result.get("veintena") is not None:
-        print(f"Veintena: {result.get('veintena', 'N/A')}")
-    if result.get("day_in_veintena") is not None:
-        print(f"Día en Veintena: {result.get('day_in_veintena', 'N/A')}")
+        print(f"Veintena: {result['veintena']}")
+    if result.get("dia_en_veintena") is not None:
+        print(f"Día en Veintena: {result['dia_en_veintena']}")
 
-    print(f"Regente del Día: {result.get('day_god', 'N/A')}")
-    print(f"Señor de la Noche: {result.get('lord_of_night', 'N/A')}")
-    print(f"Regente de la Trecena: {result.get('trecena_ruling_god', 'N/A')}")
+    if result.get("day_god") is not None:
+        print(f"Regente del Día: {result['day_god']}")
+    if result.get("lord_of_night") is not None:
+        print(f"Señor de la Noche: {result['lord_of_night']}")
+
+    if result.get("trecena_ruling_god") is not None:
+        print(f"Regente de la Trecena: {result['trecena_ruling_god']}")
+
+    # NEW: Veintena ruling god
+    if result.get("veintena_ruling_god") is not None:
+        print(f"Regente de la Veintena: {result['veintena_ruling_god']}")
+
     print("-" * 40)

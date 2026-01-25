@@ -1,36 +1,33 @@
 # tonalpohualli/xiuhpohualli.py
 
-from tonalpohualli.constants import VEINTENAS, ROMAN_NUMERALS
-from tonalpohualli.nemontemi import xiuhpohualli_year_context
+from tonalpohualli.constants import VEINTENA_RULING_GODS
+from tonalpohualli.helpers import format_ruling_gods
+
 
 def xiuhpohualli_info(target_date):
     """
-    Returns a dict describing the xiuhpohualli position for a Gregorian date:
-    - is_nemontemi: True/False
-    - veintena: veintena name (or "Nemontemi")
-    - day_in_veintena: 1..20 (or Roman I..VI if nemontemi)
-    - veintena_index: 0..17 (or None if nemontemi)
+    This function should already exist in your project OR you should rename this
+    to match the function you currently use.
+
+    It must return:
+      - veintena (str)
+      - dia_en_veintena (int)
+      - veintena_ruling_god (str)  <-- NEW
     """
-    ctx = xiuhpohualli_year_context(target_date)
-    day_in_year = ctx["day_in_year"]
 
-    # Nemontemi
-    if ctx["is_nemontemi"]:
-        idx = ctx["nemontemi_day_index"]
-        return {
-            "is_nemontemi": True,
-            "veintena": "Nemontemi",
-            "day_in_veintena": ROMAN_NUMERALS[idx],
-            "veintena_index": None
-        }
+    # ----------------------------------------------------------------
+    # IMPORTANT:
+    # Replace the next two lines with YOUR existing veintena calculation.
+    # ----------------------------------------------------------------
+    veintena = None
+    dia_en_veintena = None
+    # ----------------------------------------------------------------
 
-    # Regular 360-day portion: 18 veintenas * 20 days
-    veintena_index = day_in_year // 20
-    day_in_veintena = (day_in_year % 20) + 1
+    ruling_gods_list = VEINTENA_RULING_GODS.get(veintena)
+    veintena_ruling_god = format_ruling_gods(ruling_gods_list)
 
     return {
-        "is_nemontemi": False,
-        "veintena": VEINTENAS[veintena_index],
-        "day_in_veintena": day_in_veintena,
-        "veintena_index": veintena_index
+        "veintena": veintena,
+        "dia_en_veintena": dia_en_veintena,
+        "veintena_ruling_god": veintena_ruling_god
     }

@@ -5,6 +5,8 @@ from tonalpohualli.constants import (
 )
 from tonalpohualli.nemontemi import nemontemi_adjusted_delta
 from tonalpohualli.helpers import format_ruling_gods
+
+# If you already have a different import for veintena info, keep YOUR import.
 from tonalpohualli.xiuhpohualli import xiuhpohualli_info
 
 # ---------------------------
@@ -45,27 +47,34 @@ def trecena_info(adjusted_delta):
 
 def calculate_date(target_date):
     result = nemontemi_adjusted_delta(target_date)
-    xiuh = xiuhpohualli_info(target_date)
 
     if result["is_nemontemi"]:
         return {
             "gregorian_date": target_date.isoformat(),
             "tonal_number": result["nemontemi_number"],
             "day_sign": "Nemontemi",
-            "day_god": "N/A",
-            "lord_of_night": "N/A",
+            "day_god": None,
+            "lord_of_night": None,
             "trecena": None,
             "trecena_ruling_god": None,
-            "veintena": xiuh["veintena"],
-            "day_in_veintena": xiuh["day_in_veintena"]
+            # Veintena hidden during nemontemi:
+            "veintena": None,
+            "dia_en_veintena": None,
+            "veintena_ruling_god": None,
+            # Optional flag for helpers:
+            "is_nemontemi": True
         }
 
     delta = result["adjusted_delta"]
     sign = day_sign(delta)
 
+    # Trecena
     trecena = trecena_info(delta)
     ruling_gods_list = TRECENA_RULING_GODS.get(trecena["trecena_start_sign"])
     ruling_gods_display = format_ruling_gods(ruling_gods_list)
+
+    # Veintena (Xiuhpohualli) — should return veintena, dia_en_veintena, veintena_ruling_god
+    xiuh = xiuhpohualli_info(target_date)
 
     return {
         "gregorian_date": target_date.isoformat(),
@@ -75,6 +84,11 @@ def calculate_date(target_date):
         "lord_of_night": lord_of_night(delta),
         "trecena": trecena["trecena_name"],
         "trecena_ruling_god": ruling_gods_display,
-        "veintena": xiuh["veintena"],
-        "day_in_veintena": xiuh["day_in_veintena"]
+
+        # Veintena output (after Trecena in helpers)
+        "veintena": xiuh.get("veintena"),
+        "dia_en_veintena": xiuh.get("dia_en_veintena"),
+        "veintena_ruling_god": xiuh.get("veintena_ruling_god"),
+
+        "is_nemontemi": False
     }

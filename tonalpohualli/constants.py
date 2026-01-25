@@ -69,27 +69,14 @@ TRECENA_RULING_GODS = {
     "Tochtli": ["Xiuhtecuhtli", "Itztapaltotec"]
 }
 
-# Xiuhpohualli: 18 veintenas of 20 days (names vary by source; this is a common set)
-VEINTENAS = [
-    "Atlcahualo",
-    "Tlacaxipehualiztli",
-    "Tozoztontli",
-    "Huey Tozoztli",
-    "Toxcatl",
-    "Etzalcualiztli",
-    "Tecuilhuitontli",
-    "Huey Tecuilhuitl",
-    "Tlaxochimaco",
-    "Xocotlhuetzi",
-    "Ochpaniztli",
-    "Teotleco",
-    "Tepeilhuitl",
-    "Quecholli",
-    "Panquetzaliztli",
-    "Atemoztli",
-    "Tititl",
-    "Izcalli"
-]
+# ---------------------------
+# Veintena ruling gods (Xiuhpohualli) — placeholder table
+# Fill this later with your official list
+# ---------------------------
+VEINTENA_RULING_GODS = {
+    # "NombreDeVeintena": ["Dios Principal"],
+    # "OtraVeintena": ["Dios Principal", "Dios Secundario", "Otro Secundario"],
+}
 
 # Anchor
 ANCHOR_DATE = date(1506, 3, 13)
