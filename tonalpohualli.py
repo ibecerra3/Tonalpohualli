@@ -17,7 +17,7 @@ LORDS_OF_NIGHT = [
     "Itztli",
     "Piltzintecuhtli",
     "Centeotl",
-    "Mictlantecuhtli",
+    "Mictecacihuatl y Mictlantecuhtli",
     "Chalchiuhtlicue",
     "Tlazolteotl",
     "Tepeyollotl",
@@ -25,7 +25,7 @@ LORDS_OF_NIGHT = [
 ]
 
 DAY_GODS = {
-    "Cipactli": "Tonacatecuhtli",
+    "Cipactli": "Tonacacihuatl y Tonacatecuhtli",
     "Ehecatl": "Quetzalcoatl",
     "Calli": "Tepeyollotl",
     "Cuetzpalin": "Huehuecoyotl",
@@ -34,7 +34,7 @@ DAY_GODS = {
     "Mazatl": "Tlaloc",
     "Tochtli": "Mayahuel",
     "Atl": "Xiuhtecuhtli",
-    "Itzcuintli": "Mictlantecuhtli",
+    "Itzcuintli": "Mictecacihuatl y Mictlantecuhtli",
     "Ozomahtli": "Xochipili",
     "Malinalli": "Patecatl",
     "Acatl": "Tezcatlipoca",
@@ -50,7 +50,7 @@ DAY_GODS = {
 ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI"]
 
 TRECENA_RULING_GODS = {
-    "Cipactli": ["Tonacatecuhtli", "Tonacaccihuatl"],
+    "Cipactli": ["Tonacatecuhtli y Tonacacihuatl"],
     "Ocelotl": ["Quetzalcoatl"],
     "Mazatl": ["Tepeyollotl", "Quetzalcoatl", "Tlazolteotl"],
     "Xochitl": ["Huehuecoyotl", "Ixnextli"],
@@ -59,7 +59,7 @@ TRECENA_RULING_GODS = {
     "Quiahuitl": ["Tlaloc", "Chicomecoatl"],
     "Malinalli": ["Mayahuel", "Xochipilli", "Cinteotl"],
     "Coatl": ["Xiuhtecuhtli", "Tlahuizcalpantecuhtli"],
-    "Tecpatl": ["Mictlantecuhtli", "Tonatiuh"],
+    "Tecpatl": ["Mictecacihuatl y Mictlantecuhtli", "Tonatiuh"],
     "Ozomahtli": ["Patecatl"],
     "Cuetzpalin": ["Itzlacoliuhqui"],
     "Ollin": ["Tlazolteotl"],
@@ -242,7 +242,7 @@ if __name__ == "__main__":
     test_dates = [
         date(1506, 3, 13),
         date(1507, 3, 7),
-        date(2026, 1, 23),
+        date(2026, 1, 25),
     ]
 
     for d in test_dates:
