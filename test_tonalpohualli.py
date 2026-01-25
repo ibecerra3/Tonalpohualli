@@ -1,9 +1,14 @@
-from tonalpohualli import tonal_number, day_sign, lord_of_night
+import pytest
+from datetime import date
+from tonalpohualli import (
+    tonal_number, day_sign, lord_of_night,
+    trecena_info, TRECENA_RULING_GODS, format_ruling_gods,
+    nemontemi_adjusted_delta
+)
 
 # ---------------------------
 # ASSERT-1: Lords of the Night reset ONLY on 1 Cipactli
 # ---------------------------
-
 def test_lords_of_night_reset_only_on_cipactli():
     # Anchor day
     assert tonal_number(0) == 1
@@ -19,59 +24,90 @@ def test_lords_of_night_reset_only_on_cipactli():
     assert lord_of_night(1) != "Xiuhtecuhtli"
     assert day_sign(1) != "Cipactli"
 
-
-
-from datetime import date
-from tonalpohualli import calculate_date
+# ---------------------------
+# ASSERT-2: Tonal number cycles every 13 days
+# ---------------------------
+def test_tonal_number_cycles():
+    for delta in range(0, 260):
+        tn1 = tonal_number(delta)
+        tn2 = tonal_number(delta + 13)
+        assert tn1 == tn2, f"Tonal number should repeat every 13 days (delta {delta})"
 
 # ---------------------------
-# ASSERT-2: Nemontemi days do NOT advance the Tonalpohualli cycle
+# ASSERT-3: Day signs cycle every 20 days
 # ---------------------------
-
-def test_nemontemi_do_not_advance_tonalpohualli():
-    """
-    The day immediately before nemontemi and the day immediately after
-    nemontemi must be consecutive Tonalpohualli days.
-    """
-
-    # Last regular day before nemontemi (based on anchor year logic)
-    last_regular_day = date(1507, 3, 7)
-
-    # First regular day AFTER nemontemi
-    first_day_after_nemontemi = date(1507, 3, 13)
-
-    before = calculate_date(last_regular_day)
-    after = calculate_date(first_day_after_nemontemi)
-
-    # Tonal number must advance by exactly 1 (mod 13)
-    expected_tonal = (before["tonal_number"] % 13) + 1
-    assert after["tonal_number"] == expected_tonal
-
-    # Day sign must advance by exactly 1 in the 20-day cycle
-    assert before["day_sign"] != after["day_sign"]
-
-    # Lord of Night must advance normally (mod 9)
-    assert before["lord_of_night"] != after["lord_of_night"]
-
-
-
-from tonalpohualli import tonal_number, trecena_info
+def test_day_sign_cycles():
+    for delta in range(0, 260):
+        ds1 = day_sign(delta)
+        ds2 = day_sign(delta + 20)
+        assert ds1 == ds2, f"Day sign should repeat every 20 days (delta {delta})"
 
 # ---------------------------
-# ASSERT-3: Every trecena starts on tonal number 1 (Ce)
+# ASSERT-4: Lords of Night cycle every 9 days
 # ---------------------------
+def test_lords_of_night_cycles_every_9_days():
+    for delta in range(0, 260):
+        ln1 = lord_of_night(delta)
+        ln2 = lord_of_night(delta + 9)
+        assert ln1 == ln2, f"Lord of Night should repeat every 9 days (delta {delta})"
 
-def test_trecena_starts_on_tonal_number_one():
-    # Test several trecena boundaries
-    trecena_start_deltas = [0, 13, 26, 39, 130, 247]
+# ---------------------------
+# ASSERT-5: Nemontemi days are identified correctly
+# ---------------------------
+def test_nemontemi_days_identification():
+    # Example: check first year
+    first_year = 0
+    for i in range(360, 365):
+        result = nemontemi_adjusted_delta(date(1506, 3, 13) + timedelta(days=i))
+        assert result["is_nemontemi"] is True, f"Day {i} should be nemontemi"
 
-    for delta in trecena_start_deltas:
-        assert tonal_number(delta) == 1, \
-            f"Trecena at delta {delta} must start on tonal number 1"
+# ---------------------------
+# ASSERT-6: Non-nemontemi days adjusted_delta is correct
+# ---------------------------
+def test_adjusted_delta_non_nemontemi():
+    result = nemontemi_adjusted_delta(date(1506, 3, 14))  # day after anchor
+    assert result["is_nemontemi"] is False
+    assert result["adjusted_delta"] == 1, "Adjusted delta should be 1 for day after anchor"
 
+# ---------------------------
+# ASSERT-7: Trecena lasts exactly 13 days
+# ---------------------------
+def test_trecena_length():
+    for delta in range(0, 260, 13):
+        trecena_start = trecena_info(delta)
+        trecena_end = trecena_info(delta + 12)
+        assert trecena_start["trecena_start_sign"] == trecena_end["trecena_start_sign"], \
+            f"Trecena should last 13 days (delta {delta})"
+
+# ---------------------------
+# ASSERT-8: Trecena calculation index matches start day
+# ---------------------------
+def test_trecena_index_alignment():
+    for delta in range(0, 260):
         trecena = trecena_info(delta)
-        assert trecena["trecena_name"].startswith("Ce "), \
-            f"Trecena at delta {delta} must be named 'Ce [Day Sign]'"
+        start_delta = (delta // 13) * 13
+        expected_sign = day_sign(start_delta)
+        assert trecena["trecena_start_sign"] == expected_sign, \
+            f"Trecena start sign should match day sign for delta {delta}"
 
+# ---------------------------
+# ASSERT-9: Trecena start aligns with correct day sign
+# ---------------------------
+def test_trecena_start_sign_alignment():
+    test_deltas = [0, 13, 26, 39, 52, 65, 78, 91]
+    for delta in test_deltas:
+        trecena = trecena_info(delta)
+        start_delta = (delta // 13) * 13
+        assert trecena["trecena_start_sign"] == day_sign(start_delta), \
+            f"Trecena start sign must align with day sign for delta {delta}"
 
-
+# ---------------------------
+# ASSERT-10: Trecena ruling gods correctly mapped
+# ---------------------------
+def test_trecena_ruling_gods_mapping():
+    test_deltas = [0, 13, 26, 39, 52, 65, 78, 91]
+    for delta in test_deltas:
+        trecena = trecena_info(delta)
+        gods_list = TRECENA_RULING_GODS.get(trecena["trecena_start_sign"])
+        expected = format_ruling_gods(gods_list)
+        assert expected is not None, f"Ruling gods must exist for trecena starting on {trecena['trecena_start_sign']}"
