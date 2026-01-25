@@ -13,8 +13,8 @@ def print_tonalpohualli(result):
     print(f"Número Tonal: {result['tonal_number']}")
     print(f"Signo del Día: {result['day_sign']}")
     print(f"Trecena: {result.get('trecena', 'N/A')}")
-    print(f"Dios Regente del Día: {result.get('day_god', 'N/A')}")
+    print(f"Regente del Día: {result.get('day_god', 'N/A')}")
     print(f"Señor de la Noche: {result.get('lord_of_night', 'N/A')}")
-    print(f"Dios Regente de la Trecena: {result.get('trecena_ruling_god', 'N/A')}")
+    print(f"Regente de la Trecena: {result.get('trecena_ruling_god', 'N/A')}")
     print("-" * 40)
 
