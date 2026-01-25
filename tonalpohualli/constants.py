@@ -1,8 +1,5 @@
-from datetime import date
+# tonalpohualli/constants.py
 
-# ---------------------------
-# Constants: Day Signs, Lords, Gods, Roman Numerals
-# ---------------------------
 DAY_SIGNS = [
     "Cipactli", "Ehecatl", "Calli", "Cuetzpalin", "Coatl",
     "Miquiztli", "Mazatl", "Tochtli", "Atl", "Itzcuintli",
@@ -70,10 +67,8 @@ TRECENA_RULING_GODS = {
     "Tochtli": ["Xiuhtecuhtli", "Itztapaltotec"]
 }
 
-# ---------------------------
-# Anchor Date
-# ---------------------------
-ANCHOR_DATE = date(1506, 3, 13)      # March 13, 1506
-ANCHOR_NUMBER = 1                     # Tonalpohualli number
+# Anchor
+ANCHOR_DATE = date(1506, 3, 13)
+ANCHOR_NUMBER = 1
 ANCHOR_SIGN_INDEX = DAY_SIGNS.index("Cipactli")
 ANCHOR_LORD_INDEX = LORDS_OF_NIGHT.index("Xiuhtecuhtli")

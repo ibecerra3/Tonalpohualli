@@ -5,7 +5,7 @@ from tonalpohualli.core import tonal_number, day_sign, lord_of_night
 from tonalpohualli.nemontemi import nemontemi_adjusted_delta
 from tonalpohualli.trecena import trecena_info
 from tonalpohualli.constants import ROMAN_NUMERALS, DAY_SIGNS
-from tonalpohualli.utils import format_ruling_gods
+from tonalpohualli.helpers import format_ruling_gods
 
 # ---------------------------
 # ASSERT-1: Lords of the Night reset ONLY on 1 Cipactli
