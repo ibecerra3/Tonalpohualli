@@ -52,3 +52,26 @@ def test_nemontemi_do_not_advance_tonalpohualli():
 
     # Lord of Night must advance normally (mod 9)
     assert before["lord_of_night"] != after["lord_of_night"]
+
+
+
+from tonalpohualli import tonal_number, trecena_info
+
+# ---------------------------
+# ASSERT-3: Every trecena starts on tonal number 1 (Ce)
+# ---------------------------
+
+def test_trecena_starts_on_tonal_number_one():
+    # Test several trecena boundaries
+    trecena_start_deltas = [0, 13, 26, 39, 130, 247]
+
+    for delta in trecena_start_deltas:
+        assert tonal_number(delta) == 1, \
+            f"Trecena at delta {delta} must start on tonal number 1"
+
+        trecena = trecena_info(delta)
+        assert trecena["trecena_name"].startswith("Ce "), \
+            f"Trecena at delta {delta} must be named 'Ce [Day Sign]'"
+
+
+
