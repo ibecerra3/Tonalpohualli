@@ -1,10 +1,10 @@
 # tonalpohualli/core.py
 
-from .constants import (
+from tonalpohualli.constants import (
     DAY_SIGNS, LORDS_OF_NIGHT, DAY_GODS, TRECENA_RULING_GODS
 )
-from .nemontemi import nemontemi_adjusted_delta
-from .helpers import format_ruling_gods
+from tonalpohualli.nemontemi import nemontemi_adjusted_delta
+from tonalpohualli.helpers import format_ruling_gods
 
 # ---------------------------
 # Tonalpohualli Core Functions

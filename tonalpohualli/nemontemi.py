@@ -4,7 +4,7 @@
 Functions to calculate nemontemi-adjusted delta for Tonalpohualli dates.
 """
 
-from .constants import ANCHOR_DATE, ROMAN_NUMERALS
+from tonalpohualli.constants import ANCHOR_DATE, ROMAN_NUMERALS
 
 def nemontemi_adjusted_delta(target_date):
     """
