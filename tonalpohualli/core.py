@@ -1,13 +1,17 @@
 # tonalpohualli/core.py
 
 from tonalpohualli.constants import (
-    DAY_SIGNS, LORDS_OF_NIGHT, DAY_GODS, TRECENA_RULING_GODS
+    DAY_SIGNS,
+    LORDS_OF_NIGHT,
+    DAY_GODS,
+    TRECENA_RULING_GODS,
+    REGENTES_DEL_NUMERAL,
+    VOLATIL,
 )
 from tonalpohualli.nemontemi import nemontemi_adjusted_delta
 from tonalpohualli.helpers import format_ruling_gods
-
-# If you already have a different import for veintena info, keep YOUR import.
 from tonalpohualli.xiuhpohualli import xiuhpohualli_info
+
 
 # ---------------------------
 # Tonalpohualli Core Functions
@@ -16,8 +20,10 @@ from tonalpohualli.xiuhpohualli import xiuhpohualli_info
 def tonal_number(delta_days, anchor_number=1):
     return ((anchor_number - 1 + delta_days) % 13) + 1
 
+
 def day_sign(delta_days):
     return DAY_SIGNS[delta_days % 20]
+
 
 def lord_of_night(delta_days):
     """
@@ -26,6 +32,7 @@ def lord_of_night(delta_days):
     cycle_offset = delta_days % 260
     index = cycle_offset % 9
     return LORDS_OF_NIGHT[index]
+
 
 # ---------------------------
 # Trecena Calculations
@@ -40,6 +47,23 @@ def trecena_info(adjusted_delta):
         "trecena_name": f"Ce {trecena_start_sign}",
         "trecena_start_sign": trecena_start_sign,
     }
+
+
+# ---------------------------
+# NEW: 13-cycle components (reset with tonal number)
+# ---------------------------
+
+def regente_del_numeral(tonal_num: int):
+    if 1 <= tonal_num <= 13 and len(REGENTES_DEL_NUMERAL) == 13:
+        return REGENTES_DEL_NUMERAL[tonal_num - 1]
+    return None
+
+
+def volatil(tonal_num: int):
+    if 1 <= tonal_num <= 13 and len(VOLATIL) == 13:
+        return VOLATIL[tonal_num - 1]
+    return None
+
 
 # ---------------------------
 # Main Calculation Function
@@ -57,11 +81,14 @@ def calculate_date(target_date):
             "lord_of_night": None,
             "trecena": None,
             "trecena_ruling_god": None,
-            # Veintena hidden during nemontemi:
             "veintena": None,
             "dia_en_veintena": None,
             "veintena_ruling_god": None,
-            # Optional flag for helpers:
+
+            # New fields hidden during nemontemi
+            "regente_del_numeral": None,
+            "volatil": None,
+
             "is_nemontemi": True
         }
 
@@ -73,22 +100,27 @@ def calculate_date(target_date):
     ruling_gods_list = TRECENA_RULING_GODS.get(trecena["trecena_start_sign"])
     ruling_gods_display = format_ruling_gods(ruling_gods_list)
 
-    # Veintena (Xiuhpohualli) — should return veintena, dia_en_veintena, veintena_ruling_god
+    # Veintena (Xiuhpohualli)
     xiuh = xiuhpohualli_info(target_date)
+
+    # Tonal number drives regente del numeral + volatil
+    tnum = tonal_number(delta)
 
     return {
         "gregorian_date": target_date.isoformat(),
-        "tonal_number": tonal_number(delta),
+        "tonal_number": tnum,
         "day_sign": sign,
         "day_god": DAY_GODS.get(sign, "Unknown"),
         "lord_of_night": lord_of_night(delta),
         "trecena": trecena["trecena_name"],
         "trecena_ruling_god": ruling_gods_display,
 
-        # Veintena output (after Trecena in helpers)
         "veintena": xiuh.get("veintena"),
         "dia_en_veintena": xiuh.get("dia_en_veintena"),
         "veintena_ruling_god": xiuh.get("veintena_ruling_god"),
+
+        "regente_del_numeral": regente_del_numeral(tnum),
+        "volatil": volatil(tnum),
 
         "is_nemontemi": False
     }

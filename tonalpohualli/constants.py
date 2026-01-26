@@ -93,6 +93,43 @@ VEINTENA_RULING_GODS = {
     "Izcalli": ["Xiuhtecuhtli"],
 }
 
+# ---------------------------
+# NEW: Regente del Numeral (1–13)
+# ---------------------------
+REGENTES_DEL_NUMERAL = [
+    "Xiuhtecuhtli",                         # 1  Ce
+    "Tlaltecuhtli",                         # 2  Ome
+    "Chalchihuitlicue",                     # 3  Yei
+    "Tonatiuh",                             # 4  Nahui
+    "Tlazolteotl",                          # 5  Mahcuilli
+    "Mictecacihuatl y Mictlantecuhtli",     # 6  Chicuacen
+    "Centeotl",                             # 7  Chicome
+    "Tlaloc",                               # 8  Chicuei
+    "Quetzalcoatl",                         # 9  Chicunahui
+    "Tezcatlipoca",                         # 10 Mahtlactli
+    "Chalmecatecuhtli",                     # 11 Mahtlactli-once
+    "Tlahuizcalpantecuhtli",                # 12 Mahtlactli-omome
+    "Citlalicue",                           # 13 Mahtlactli-omei
+]
+
+# ---------------------------
+# NEW: Volátil (1–13)
+# ---------------------------
+VOLATIL = [
+    "Huiztilin (humming-bird)",                  # 1
+    "Quetzalhuiztilin (green humming-bird)",     # 2
+    "Huactli (hawk)",                            # 3
+    "Zolin (quail)",                             # 4
+    "Cuauhtli (eagle)",                          # 5
+    "Chicuatli (screech owl)",                   # 6
+    "Papalotl (butterfly)",                      # 7
+    "Tlotli (hawk eagle)",                       # 8
+    "Huexolotl (turkey)",                        # 9
+    "Tecolotl (owl)",                            # 10
+    "Alotl (macaw)",                             # 11
+    "Quetzal (quetzal)",                         # 12
+    "Toznene (parrot)",                          # 13
+]
 
 # Anchor
 ANCHOR_DATE = date(1506, 3, 13)
