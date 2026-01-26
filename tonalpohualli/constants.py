@@ -94,41 +94,25 @@ VEINTENA_RULING_GODS = {
 }
 
 # ---------------------------
-# NEW: Regente del Numeral (1–13)
+# Year Bearers (Portadores del Año) + Annual Regent Gods
 # ---------------------------
-REGENTES_DEL_NUMERAL = [
-    "Xiuhtecuhtli",                         # 1  Ce
-    "Tlaltecuhtli",                         # 2  Ome
-    "Chalchihuitlicue",                     # 3  Yei
-    "Tonatiuh",                             # 4  Nahui
-    "Tlazolteotl",                          # 5  Mahcuilli
-    "Mictecacihuatl y Mictlantecuhtli",     # 6  Chicuacen
-    "Centeotl",                             # 7  Chicome
-    "Tlaloc",                               # 8  Chicuei
-    "Quetzalcoatl",                         # 9  Chicunahui
-    "Tezcatlipoca",                         # 10 Mahtlactli
-    "Chalmecatecuhtli",                     # 11 Mahtlactli-once
-    "Tlahuizcalpantecuhtli",                # 12 Mahtlactli-omome
-    "Citlalicue",                           # 13 Mahtlactli-omei
-]
+# 1 Tochtli, 2 Acatl, 3 Tecpatl, 4 Calli, 5 Tochtli, etc.
+YEAR_BEARER_SIGNS = ["Tochtli", "Acatl", "Tecpatl", "Calli"]
 
-# ---------------------------
-# NEW: Volátil (1–13)
-# ---------------------------
-VOLATIL = [
-    "Huiztilin (humming-bird)",                  # 1
-    "Quetzalhuiztilin (green humming-bird)",     # 2
-    "Huactli (hawk)",                            # 3
-    "Zolin (quail)",                             # 4
-    "Cuauhtli (eagle)",                          # 5
-    "Chicuatli (screech owl)",                   # 6
-    "Papalotl (butterfly)",                      # 7
-    "Tlotli (hawk eagle)",                       # 8
-    "Huexolotl (turkey)",                        # 9
-    "Tecolotl (owl)",                            # 10
-    "Alotl (macaw)",                             # 11
-    "Quetzal (quetzal)",                         # 12
-    "Toznene (parrot)",                          # 13
+# Anchor year-bearer for the ANCHOR_DATE's xiuhpohualli year (year index 0).
+ANCHOR_YEAR_BEARER_NUMBER = 1
+ANCHOR_YEAR_BEARER_SIGN = "Tochtli"
+
+# Annual regent gods (7-god rotation).
+# If your list/order differs, edit THIS list only.
+YEAR_REGENT_GODS = [
+    "Xiuhtecuhtli",
+    "Tezcatlipoca",
+    "Chalchiuhtlicue",
+    "Centeotl",
+    "Mictecacihuatl y Mictlantecuhtli",
+    "Tlazolteotl",
+    "Tlaloc",
 ]
 
 # Anchor
