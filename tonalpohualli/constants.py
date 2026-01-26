@@ -94,17 +94,17 @@ VEINTENA_RULING_GODS = {
 }
 
 # ---------------------------
-# Year Bearers (Portadores del Año) + Annual Regent Gods
+# Year Bearers + Annual Regent Gods + 52-year cycle
 # ---------------------------
-# 1 Tochtli, 2 Acatl, 3 Tecpatl, 4 Calli, 5 Tochtli, etc.
+
+# Portadores del Año cycle (signs)
 YEAR_BEARER_SIGNS = ["Tochtli", "Acatl", "Tecpatl", "Calli"]
 
-# Anchor year-bearer for the ANCHOR_DATE's xiuhpohualli year (year index 0).
+# Anchor year-bearer for the ANCHOR_DATE's xiuhpohualli year (year index 0)
 ANCHOR_YEAR_BEARER_NUMBER = 1
 ANCHOR_YEAR_BEARER_SIGN = "Tochtli"
 
-# Annual regent gods (7-god rotation).
-# If your list/order differs, edit THIS list only.
+# Annual regent gods (7-god rotation) — using your “for now” list
 YEAR_REGENT_GODS = [
     "Xiuhtecuhtli",
     "Tezcatlipoca",
@@ -115,7 +115,9 @@ YEAR_REGENT_GODS = [
     "Tlaloc",
 ]
 
+# ---------------------------
 # Anchor
+# ---------------------------
 ANCHOR_DATE = date(1506, 3, 13)
 ANCHOR_NUMBER = 1
 ANCHOR_SIGN_INDEX = DAY_SIGNS.index("Cipactli")
