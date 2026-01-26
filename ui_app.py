@@ -24,7 +24,12 @@ st.sidebar.header("Consulta")
 if st.sidebar.button("📅 Hoy"):
     selected_date = date.today()
 else:
-    selected_date = st.sidebar.date_input("Elige una fecha", value=date.today())
+    selected_date = st.sidebar.date_input(
+        "Elige una fecha",
+        value=date.today(),
+        min_value=date(1400, 1, 1),
+        max_value=date(2200, 12, 31),
+    )
 
 
 # -------------------------
@@ -38,7 +43,7 @@ result = calculate_date(selected_date)
 # -------------------------
 st.subheader("Lectura del Día")
 
-aspects: list[tuple[str, object]] = []
+aspects = []
 
 # Annual context (top)
 aspects.append(("Fecha Gregoriana", result.get("gregorian_date")))
@@ -52,7 +57,7 @@ if xiuhmolpilli_year is not None:
 aspects.append(("Número Tonal", result.get("tonal_number")))
 aspects.append(("Signo del Día", result.get("day_sign")))
 
-# Nemontemi handling: hide non-applicable aspects
+# Nemontemi handling
 is_nemontemi = result.get("is_nemontemi") or result.get("day_sign") == "Nemontemi"
 if is_nemontemi:
     aspects.append(("Estado", "Día Nemontemi — día de recogimiento"))
@@ -72,7 +77,7 @@ else:
 # Annual closure (always last)
 aspects.append(("Regente del Año", result.get("annual_regent_god")))
 
-# Print the list (skip missing values)
+# Print list
 for label, value in aspects:
     if value is None:
         continue
