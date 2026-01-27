@@ -5,6 +5,7 @@ from tonalpohualli.constants import (
     LORDS_OF_NIGHT,
     DAY_GODS,
     TRECENA_RULING_GODS,
+    REGENTE_DEL_NUMERAL,
     YEAR_BEARER_SIGNS,
     ANCHOR_YEAR_BEARER_NUMBER,
     ANCHOR_YEAR_BEARER_SIGN,
@@ -15,10 +16,6 @@ from tonalpohualli.helpers import format_ruling_gods
 from tonalpohualli.xiuhpohualli import xiuhpohualli_info
 
 
-# ---------------------------
-# Tonalpohualli Core Functions
-# ---------------------------
-
 def tonal_number(delta_days, anchor_number=1):
     return ((anchor_number - 1 + delta_days) % 13) + 1
 
@@ -28,27 +25,11 @@ def day_sign(delta_days):
 
 
 def lord_of_night(delta_days):
-    """
-    Lords of Night cycle resets every 1 Cipactli (start of 260-day Tonalpohualli cycle).
-    """
     cycle_offset = delta_days % 260
-    index = cycle_offset % 9
-    return LORDS_OF_NIGHT[index]
+    return LORDS_OF_NIGHT[cycle_offset % 9]
 
-
-# ---------------------------
-# Year Bearers + Annual Regent Gods + Xiuhmolpilli
-# ---------------------------
 
 def year_bearer_info(years_since_anchor: int):
-    """
-    Returns:
-      - year_bearer: e.g. "1 Tochtli"
-      - annual_regent_god: 7-god rotation
-      - xiuhmolpilli_year: 1..52
-      - years_since_anchor: integer
-    """
-    # Year bearer sign
     try:
         anchor_sign_idx = YEAR_BEARER_SIGNS.index(ANCHOR_YEAR_BEARER_SIGN)
     except ValueError:
@@ -58,12 +39,7 @@ def year_bearer_info(years_since_anchor: int):
     number = ((ANCHOR_YEAR_BEARER_NUMBER - 1 + years_since_anchor) % 13) + 1
     year_name = f"{number} {sign}"
 
-    # Annual regent
-    regent = None
-    if YEAR_REGENT_GODS:
-        regent = YEAR_REGENT_GODS[years_since_anchor % len(YEAR_REGENT_GODS)]
-
-    # 52-year cycle position (Atadura de los Años: x de 52)
+    regent = YEAR_REGENT_GODS[years_since_anchor % len(YEAR_REGENT_GODS)] if YEAR_REGENT_GODS else None
     xiuhmolpilli_year = (years_since_anchor % 52) + 1
 
     return {
@@ -73,10 +49,6 @@ def year_bearer_info(years_since_anchor: int):
         "years_since_anchor": years_since_anchor,
     }
 
-
-# ---------------------------
-# Trecena Calculations
-# ---------------------------
 
 def trecena_info(adjusted_delta):
     trecena_index = adjusted_delta // 13
@@ -89,37 +61,34 @@ def trecena_info(adjusted_delta):
     }
 
 
-# ---------------------------
-# Main Calculation Function
-# ---------------------------
-
 def calculate_date(target_date):
-    # Solar-year context for year bearers / regentes / 52-year count
+    # Annual context
     year_ctx = xiuhpohualli_year_context(target_date)
     year_meta = year_bearer_info(year_ctx["years_since_anchor"])
 
     # Tonalpohualli delta with nemontemi skipped
     result = nemontemi_adjusted_delta(target_date)
 
+    # NEMONTEMI
     if result["is_nemontemi"]:
+        numeral = result["nemontemi_number"]
         return {
             "gregorian_date": target_date.isoformat(),
 
-            # Annual context (still applies during nemontemi)
             "year_bearer": year_meta["year_bearer"],
             "xiuhmolpilli_year": year_meta["xiuhmolpilli_year"],
             "annual_regent_god": year_meta["annual_regent_god"],
             "years_since_anchor": year_meta["years_since_anchor"],
 
-            # Tonalpohualli / daily values
-            "tonal_number": result["nemontemi_number"],
+            "tonal_number": numeral,
+            "regente_del_numeral": REGENTE_DEL_NUMERAL.get(numeral, "Por definir"),
+
             "day_sign": "Nemontemi",
             "day_god": None,
             "lord_of_night": None,
             "trecena": None,
             "trecena_ruling_god": None,
 
-            # Veintena hidden during nemontemi
             "veintena": None,
             "dia_en_veintena": None,
             "veintena_ruling_god": None,
@@ -127,37 +96,35 @@ def calculate_date(target_date):
             "is_nemontemi": True,
         }
 
+    # NORMAL DAY
     delta = result["adjusted_delta"]
     sign = day_sign(delta)
+    numeral = tonal_number(delta)
 
-    # Trecena
     trecena = trecena_info(delta)
     ruling_gods_list = TRECENA_RULING_GODS.get(trecena["trecena_start_sign"])
     ruling_gods_display = format_ruling_gods(ruling_gods_list)
 
-    # Veintena (Xiuhpohualli)
     xiuh = xiuhpohualli_info(target_date)
 
     return {
         "gregorian_date": target_date.isoformat(),
 
-        # Annual context
         "year_bearer": year_meta["year_bearer"],
         "xiuhmolpilli_year": year_meta["xiuhmolpilli_year"],
         "annual_regent_god": year_meta["annual_regent_god"],
         "years_since_anchor": year_meta["years_since_anchor"],
 
-        # Tonalpohualli
-        "tonal_number": tonal_number(delta),
+        "tonal_number": numeral,
+        "regente_del_numeral": REGENTE_DEL_NUMERAL.get(numeral, "Por definir"),
+
         "day_sign": sign,
         "day_god": DAY_GODS.get(sign, "Unknown"),
         "lord_of_night": lord_of_night(delta),
 
-        # Trecena
         "trecena": trecena["trecena_name"],
         "trecena_ruling_god": ruling_gods_display,
 
-        # Veintena output (after Trecena in helpers)
         "veintena": xiuh.get("veintena"),
         "dia_en_veintena": xiuh.get("dia_en_veintena"),
         "veintena_ruling_god": xiuh.get("veintena_ruling_god"),

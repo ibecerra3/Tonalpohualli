@@ -11,42 +11,51 @@ def format_ruling_gods(gods_list):
 def print_tonalpohualli(result):
     print(f"Fecha Gregoriana: {result['gregorian_date']}")
 
-    # Portador del Año + Atadura de los Años (x de 52) right after it
+    # Year context (top)
     if result.get("year_bearer"):
         print(f"Portador del Año: {result['year_bearer']}")
+
     if result.get("xiuhmolpilli_year") is not None:
         print(f"Atadura de los Años: {result['xiuhmolpilli_year']} de 52")
 
+    # Daily core
     print(f"Número Tonal: {result['tonal_number']}")
     print(f"Signo del Día: {result['day_sign']}")
 
-    # Nemontemi: hide everything that doesn't apply
+    # Nemontemi: hide non-applicable values (but numeral regent still applies)
     if result.get("day_sign") == "Nemontemi" or result.get("is_nemontemi") is True:
-        # Regente del Año must print at the END (even for nemontemi)
+        if result.get("regente_del_numeral") is not None:
+            print(f"Regente del Numeral: {result['regente_del_numeral']}")
+
+        # Regente del Año must remain last
         if result.get("annual_regent_god"):
             print(f"Regente del Año: {result['annual_regent_god']}")
         print("-" * 40)
         return
 
-    # Normal days
+    # Trecena first
     if result.get("trecena") is not None:
         print(f"Trecena: {result['trecena']}")
 
-    # Veintena section (after Trecena, per your requirement)
+    # Veintena after Trecena
     if result.get("veintena") is not None:
         print(f"Veintena: {result['veintena']}")
     if result.get("dia_en_veintena") is not None:
         print(f"Día en Veintena: {result['dia_en_veintena']}")
 
+    # ✅ Your requirement: Regente del Numeral after Día en Veintena
+    if result.get("regente_del_numeral") is not None:
+        print(f"Regente del Numeral: {result['regente_del_numeral']}")
+
+    # Daily regencies
     if result.get("day_god") is not None:
         print(f"Regente del Día: {result['day_god']}")
-
     if result.get("lord_of_night") is not None:
         print(f"Señor de la Noche: {result['lord_of_night']}")
 
+    # Trecena / Veintena rulers
     if result.get("trecena_ruling_god") is not None:
         print(f"Regente de la Trecena: {result['trecena_ruling_god']}")
-
     if result.get("veintena_ruling_god") is not None:
         print(f"Regente de la Veintena: {result['veintena_ruling_god']}")
 

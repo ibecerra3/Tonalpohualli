@@ -2,6 +2,12 @@
 
 from datetime import date
 
+ROMAN_NUMERALS = [
+    "I", "II", "III", "IV", "V",
+    "VI", "VII", "VIII", "IX", "X",
+    "XI", "XII", "XIII"
+]
+
 DAY_SIGNS = [
     "Cipactli", "Ehecatl", "Calli", "Cuetzpalin", "Coatl",
     "Miquiztli", "Mazatl", "Tochtli", "Atl", "Itzcuintli",
@@ -43,8 +49,6 @@ DAY_GODS = {
     "Quiahuitl": "Tonatiuh",
     "Xochitl": "Xochiquetzal"
 }
-
-ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI"]
 
 TRECENA_RULING_GODS = {
     "Cipactli": ["Tonacatecuhtli y Tonacacihuatl"],
@@ -94,17 +98,32 @@ VEINTENA_RULING_GODS = {
 }
 
 # ---------------------------
+# Regentes del Numeral (1–13)
+# ---------------------------
+REGENTE_DEL_NUMERAL = {
+    1: "Xiuhtecuhtli",
+    2: "Tlaltecuhtli",
+    3: "Chalchihuitlicue",
+    4: "Tonatiuh",
+    5: "Tlazolteotl",
+    6: "Mictecacihuatl y Mictlantecuhtli",
+    7: "Centeotl",
+    8: "Tlaloc",
+    9: "Quetzalcoatl",
+    10: "Tezcatlipoca",
+    11: "Chalmecatecuhtli",
+    12: "Tlahuizcalpantecuhtli",
+    13: "Citlalicue",
+}
+
+# ---------------------------
 # Year Bearers + Annual Regent Gods + 52-year cycle
 # ---------------------------
-
-# Portadores del Año cycle (signs)
 YEAR_BEARER_SIGNS = ["Tochtli", "Acatl", "Tecpatl", "Calli"]
 
-# Anchor year-bearer for the ANCHOR_DATE's xiuhpohualli year (year index 0)
 ANCHOR_YEAR_BEARER_NUMBER = 1
 ANCHOR_YEAR_BEARER_SIGN = "Tochtli"
 
-# Annual regent gods (7-god rotation) — using your “for now” list
 YEAR_REGENT_GODS = [
     "Xiuhtecuhtli",
     "Tezcatlipoca",
@@ -119,6 +138,3 @@ YEAR_REGENT_GODS = [
 # Anchor
 # ---------------------------
 ANCHOR_DATE = date(1506, 3, 13)
-ANCHOR_NUMBER = 1
-ANCHOR_SIGN_INDEX = DAY_SIGNS.index("Cipactli")
-ANCHOR_LORD_INDEX = LORDS_OF_NIGHT.index("Xiuhtecuhtli")
