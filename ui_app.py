@@ -8,13 +8,12 @@ from tonalpohualli.core import calculate_date
 
 st.set_page_config(
     page_title="Tonalpohualli Diario",
-    page_icon="🗿",
+    page_icon="🌞",  # change if you want a different emoji
     layout="centered"
 )
 
-st.title("🗿 Tonalpohualli Diario")
+st.title("🌞 Tonalpohualli Diario")
 st.caption("Lectura diaria estilo ‘horóscopo’ + búsqueda por fecha.")
-
 
 # -------------------------
 # Sidebar: Date Controls
@@ -31,53 +30,62 @@ else:
         max_value=date(2200, 12, 31),
     )
 
-
 # -------------------------
 # Calculate
 # -------------------------
 result = calculate_date(selected_date)
 
-
 # -------------------------
-# Render as a single list
+# Render as a single list (same order as helpers.py)
 # -------------------------
 st.subheader("Lectura del Día")
 
 aspects = []
 
-# Annual context (top)
+# Fecha
 aspects.append(("Fecha Gregoriana", result.get("gregorian_date")))
+
+# Contexto anual
 aspects.append(("Portador del Año", result.get("year_bearer")))
+if result.get("xiuhmolpilli_year") is not None:
+    aspects.append(("Atadura de los Años", f"{result['xiuhmolpilli_year']} de 52"))
 
-xiuhmolpilli_year = result.get("xiuhmolpilli_year")
-if xiuhmolpilli_year is not None:
-    aspects.append(("Atadura de los Años", f"{xiuhmolpilli_year} de 52"))
-
-# Daily core
+# Núcleo diario
 aspects.append(("Número Tonal", result.get("tonal_number")))
 aspects.append(("Signo del Día", result.get("day_sign")))
 
-# Nemontemi handling
-is_nemontemi = result.get("is_nemontemi") or result.get("day_sign") == "Nemontemi"
+# Nemontemi: ocultar lo que no aplica, pero mantener numeral + regente del año al final
+is_nemontemi = result.get("day_sign") == "Nemontemi" or result.get("is_nemontemi") is True
 if is_nemontemi:
-    aspects.append(("Estado", "Día Nemontemi — día de recogimiento"))
-else:
-    # Structure
-    aspects.append(("Trecena", result.get("trecena")))
-    aspects.append(("Regente de la Trecena", result.get("trecena_ruling_god")))
+    if result.get("regente_del_numeral") is not None:
+        aspects.append(("Regente del Numeral", result.get("regente_del_numeral")))
 
+    # Regente del Año al final
+    aspects.append(("Regente del Año", result.get("annual_regent_god")))
+
+else:
+    # Trecena
+    aspects.append(("Trecena", result.get("trecena")))
+
+    # Veintena después de Trecena
     aspects.append(("Veintena", result.get("veintena")))
     aspects.append(("Día en Veintena", result.get("dia_en_veintena")))
-    aspects.append(("Regente de la Veintena", result.get("veintena_ruling_god")))
 
-    # Daily regencies
+    # Regente del Numeral después de Día en Veintena (tu requisito)
+    aspects.append(("Regente del Numeral", result.get("regente_del_numeral")))
+
+    # Regencias diarias
     aspects.append(("Regente del Día", result.get("day_god")))
     aspects.append(("Señor de la Noche", result.get("lord_of_night")))
 
-# Annual closure (always last)
-aspects.append(("Regente del Año", result.get("annual_regent_god")))
+    # Regentes de trecena / veintena
+    aspects.append(("Regente de la Trecena", result.get("trecena_ruling_god")))
+    aspects.append(("Regente de la Veintena", result.get("veintena_ruling_god")))
 
-# Print list
+    # Regente del Año al final
+    aspects.append(("Regente del Año", result.get("annual_regent_god")))
+
+# Print list (skip None)
 for label, value in aspects:
     if value is None:
         continue
