@@ -8,7 +8,7 @@ if __name__ == "__main__":
     test_dates = [
         date(1506, 3, 13),
         date(1507, 3, 8),
-        date(2026, 1, 25),
+        date(2026, 1, 29),
     ]
 
     for d in test_dates:

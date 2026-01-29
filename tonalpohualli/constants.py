@@ -32,7 +32,7 @@ DAY_GODS = {
     "Ehecatl": "Quetzalcoatl",
     "Calli": "Tepeyollotl",
     "Cuetzpalin": "Huehuecoyotl",
-    "Coatl": "Chalchiuhtli",
+    "Coatl": "Chalchiuhtlicue",
     "Miquiztli": "Tecciztecatl",
     "Mazatl": "Tlaloc",
     "Tochtli": "Mayahuel",
