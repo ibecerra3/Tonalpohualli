@@ -2,12 +2,6 @@
 
 from datetime import date
 
-ROMAN_NUMERALS = [
-    "I", "II", "III", "IV", "V",
-    "VI", "VII", "VIII", "IX", "X",
-    "XI", "XII", "XIII"
-]
-
 DAY_SIGNS = [
     "Cipactli", "Ehecatl", "Calli", "Cuetzpalin", "Coatl",
     "Miquiztli", "Mazatl", "Tochtli", "Atl", "Itzcuintli",
@@ -32,7 +26,7 @@ DAY_GODS = {
     "Ehecatl": "Quetzalcoatl",
     "Calli": "Tepeyollotl",
     "Cuetzpalin": "Huehuecoyotl",
-    "Coatl": "Chalchiuhtlicue",
+    "Coatl": "Chalchiuhtli",
     "Miquiztli": "Tecciztecatl",
     "Mazatl": "Tlaloc",
     "Tochtli": "Mayahuel",
@@ -49,6 +43,13 @@ DAY_GODS = {
     "Quiahuitl": "Tonatiuh",
     "Xochitl": "Xochiquetzal"
 }
+
+# Needed by nemontemi.py (do not remove)
+ROMAN_NUMERALS = [
+    "I", "II", "III", "IV", "V",
+    "VI", "VII", "VIII", "IX", "X",
+    "XI", "XII", "XIII"
+]
 
 TRECENA_RULING_GODS = {
     "Cipactli": ["Tonacatecuhtli y Tonacacihuatl"],
@@ -115,6 +116,28 @@ REGENTE_DEL_NUMERAL = {
     12: "Tlahuizcalpantecuhtli",
     13: "Citlalicue",
 }
+
+# ---------------------------
+# Volátiles (13)
+# ---------------------------
+VOLATILES = [
+    "Huiztilin (humming-bird)",
+    "Quetzalhuiztilin (green humming-bird)",
+    "Huactli (hawk)",
+    "Zolin (quail)",
+    "Cuauhtli (eagle)",
+    "Chicuatli (screech owl)",
+    "Papalotl (butterfly)",
+    "Tlotli (hawk eagle)",
+    "Huexolotl (turkey)",
+    "Tecolotl (owl)",
+    "Alotl (macaw)",
+    "Quetzal (quetzal)",
+    "Toznene (parrot)",
+]
+
+# Map 1..13 -> volatile
+VOLATIL_DEL_NUMERAL = {i + 1: VOLATILES[i] for i in range(13)}
 
 # ---------------------------
 # Year Bearers + Annual Regent Gods + 52-year cycle
