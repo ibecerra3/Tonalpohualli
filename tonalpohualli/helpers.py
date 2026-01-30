@@ -22,10 +22,12 @@ def print_tonalpohualli(result):
     print(f"Número Tonal: {result['tonal_number']}")
     print(f"Signo del Día: {result['day_sign']}")
 
-    # Nemontemi: hide non-applicable values (but numeral regent still applies)
+    # Nemontemi: hide non-applicable values (but numeral regent + volatile still apply)
     if result.get("day_sign") == "Nemontemi" or result.get("is_nemontemi") is True:
         if result.get("regente_del_numeral") is not None:
             print(f"Regente del Numeral: {result['regente_del_numeral']}")
+        if result.get("volatil") is not None:
+            print(f"Volátil: {result['volatil']}")
 
         # Regente del Año must remain last
         if result.get("annual_regent_god"):
@@ -43,9 +45,13 @@ def print_tonalpohualli(result):
     if result.get("dia_en_veintena") is not None:
         print(f"Día en Veintena: {result['dia_en_veintena']}")
 
-    # ✅ Your requirement: Regente del Numeral after Día en Veintena
+    # Regente del Numeral after Día en Veintena
     if result.get("regente_del_numeral") is not None:
         print(f"Regente del Numeral: {result['regente_del_numeral']}")
+
+    # ✅ Volátil immediately after Regente del Numeral
+    if result.get("volatil") is not None:
+        print(f"Volátil: {result['volatil']}")
 
     # Daily regencies
     if result.get("day_god") is not None:

@@ -6,6 +6,7 @@ from tonalpohualli.constants import (
     DAY_GODS,
     TRECENA_RULING_GODS,
     REGENTE_DEL_NUMERAL,
+    VOLATIL_DEL_NUMERAL,
     YEAR_BEARER_SIGNS,
     ANCHOR_YEAR_BEARER_NUMBER,
     ANCHOR_YEAR_BEARER_SIGN,
@@ -82,6 +83,7 @@ def calculate_date(target_date):
 
             "tonal_number": numeral,
             "regente_del_numeral": REGENTE_DEL_NUMERAL.get(numeral, "Por definir"),
+            "volatil": VOLATIL_DEL_NUMERAL.get(numeral),
 
             "day_sign": "Nemontemi",
             "day_god": None,
@@ -117,6 +119,7 @@ def calculate_date(target_date):
 
         "tonal_number": numeral,
         "regente_del_numeral": REGENTE_DEL_NUMERAL.get(numeral, "Por definir"),
+        "volatil": VOLATIL_DEL_NUMERAL.get(numeral),
 
         "day_sign": sign,
         "day_god": DAY_GODS.get(sign, "Unknown"),
