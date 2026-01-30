@@ -72,7 +72,7 @@ def calculate_date(target_date):
 
     # NEMONTEMI
     if result["is_nemontemi"]:
-        numeral = result["nemontemi_number"]
+        nem_num = result["nemontemi_number"]
         return {
             "gregorian_date": target_date.isoformat(),
 
@@ -81,9 +81,9 @@ def calculate_date(target_date):
             "annual_regent_god": year_meta["annual_regent_god"],
             "years_since_anchor": year_meta["years_since_anchor"],
 
-            "tonal_number": numeral,
-            "regente_del_numeral": REGENTE_DEL_NUMERAL.get(numeral, "Por definir"),
-            "volatil": VOLATIL_DEL_NUMERAL.get(numeral),
+            # Nemontemi-specific (DO NOT return tonal_number / regente_del_numeral)
+            "nemontemi_number": nem_num,
+            "volatil": VOLATIL_DEL_NUMERAL.get(nem_num),
 
             "day_sign": "Nemontemi",
             "day_god": None,
