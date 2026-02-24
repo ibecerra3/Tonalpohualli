@@ -63,6 +63,7 @@ def set_styles():
     <style>
     {bg_css}
 
+    /* Card container */
     .block-container {{
         background-color: rgba(255,248,235,0.95);
         padding: 2.5rem;
@@ -70,11 +71,32 @@ def set_styles():
         box-shadow: 0 0 40px rgba(0,0,0,0.15);
     }}
 
-    h1, h2, h3 {{
-        color: #5a3b1e;
+    /* ---- FORCE READABLE TEXT COLORS (fix invisible text) ---- */
+    html, body, [class*="st-"], .stApp {{
+        color: #2f2a23 !important;
     }}
 
-    /* --- CODEX GLYPH STRIP --- */
+    h1, h2, h3, h4, h5 {{
+        color: #5a3b1e !important;
+    }}
+
+    /* Markdown & general text */
+    .stMarkdown, .stText, p, li, span {{
+        color: #2f2a23 !important;
+    }}
+
+    /* Captions and small helper text */
+    .stCaption, .stMarkdown small {{
+        color: #6b5a44 !important;
+        opacity: 1 !important;
+    }}
+
+    /* Sidebar labels / widgets */
+    label, .stSelectbox label, .stDateInput label {{
+        color: #2f2a23 !important;
+    }}
+
+    /* ---- CODEX GLYPH STRIP ---- */
     .codex-strip {{
         border: 5px solid #8b1e1e;
         border-radius: 6px;
@@ -99,20 +121,19 @@ def set_styles():
 
     .codex-title {{
         font-size: 0.95rem;
-        color: #6b5a44;
+        color: #6b5a44 !important;
         margin-bottom: 10px;
     }}
 
     .codex-label {{
         font-weight: 600;
         margin-top: 10px;
-        color: #2f2a23;
+        color: #2f2a23 !important;
     }}
 
     .codex-img {{
         width: 130px;
         height: auto;
-        image-rendering: auto;
         display: block;
         margin: 0 auto;
     }}
@@ -165,7 +186,7 @@ else:
 result = calculate_date(selected_date)
 
 # -------------------------------------------------
-# GLYPH STRIP (PURE HTML GRID = STABLE)
+# GLYPH STRIP
 # -------------------------------------------------
 
 st.subheader("Lectura del Día")
