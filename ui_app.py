@@ -71,7 +71,7 @@ def set_styles():
         box-shadow: 0 0 40px rgba(0,0,0,0.15);
     }}
 
-    /* ---- FORCE READABLE TEXT COLORS (fix invisible text) ---- */
+    /* ---- FORCE READABLE TEXT COLORS ---- */
     html, body, [class*="st-"], .stApp {{
         color: #2f2a23 !important;
     }}
@@ -80,18 +80,15 @@ def set_styles():
         color: #5a3b1e !important;
     }}
 
-    /* Markdown & general text */
     .stMarkdown, .stText, p, li, span {{
         color: #2f2a23 !important;
     }}
 
-    /* Captions and small helper text */
     .stCaption, .stMarkdown small {{
         color: #6b5a44 !important;
         opacity: 1 !important;
     }}
 
-    /* Sidebar labels / widgets */
     label, .stSelectbox label, .stDateInput label {{
         color: #2f2a23 !important;
     }}
@@ -271,4 +268,16 @@ if not result.get("is_nemontemi"):
 for label, value in aspects:
     if value is None:
         continue
+
     st.write(f"**{label}:** {value}")
+
+    # Red codex divider after "Día en Veintena"
+    if label == "Día en Veintena":
+        st.markdown("""
+        <div style="
+            border-top: 4px solid #8b1e1e;
+            width: 85%;
+            margin: 18px auto 18px auto;
+            opacity: 0.9;
+        "></div>
+        """, unsafe_allow_html=True)
