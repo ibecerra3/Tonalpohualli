@@ -101,7 +101,7 @@ else:
 result = calculate_date(selected_date)
 
 # -------------------------------------------------
-# ICON STRIP
+# GLYPH STRIP WITH CODEX FRAME
 # -------------------------------------------------
 
 st.subheader("Lectura del Día")
@@ -110,8 +110,6 @@ day_sign = result.get("day_sign")
 tonal_number = result.get("tonal_number")
 year_bearer = result.get("year_bearer")
 
-is_nemontemi = (day_sign == "Nemontemi") or (result.get("is_nemontemi") is True)
-
 num_icon = find_numeral_icon(tonal_number)
 day_icon = find_day_sign_icon(day_sign)
 
@@ -119,30 +117,65 @@ yb_num, yb_sign = parse_year_bearer(year_bearer)
 yb_sign_icon = find_day_sign_icon(yb_sign) if yb_sign else None
 yb_num_icon = find_numeral_icon(yb_num) if yb_num else None
 
-c1, c2, c3 = st.columns(3)
+# --- Red Codex Frame Start ---
+st.markdown("""
+<div style="
+    border: 6px solid #8b1e1e;
+    padding: 25px 10px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+    background-color: rgba(255,245,230,0.6);
+">
+""", unsafe_allow_html=True)
+
+c1, c2, c3 = st.columns(3, gap="large")
+
+def centered_column(title, icon1=None, icon2=None, label=None):
+    st.markdown(
+        f"<div style='text-align:center; font-size:0.95rem; color:#6b5a44; margin-bottom:8px;'>{title}</div>",
+        unsafe_allow_html=True
+    )
+
+    if icon1:
+        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+        st.image(str(icon1), width=130)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    if icon2:
+        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+        st.image(str(icon2), width=130)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    if label:
+        st.markdown(
+            f"<div style='text-align:center; font-weight:600; margin-top:8px;'>{label}</div>",
+            unsafe_allow_html=True
+        )
 
 with c1:
-    st.caption("Número Tonal")
-    if num_icon:
-        st.image(str(num_icon), use_container_width=True)
-    if tonal_number:
-        st.write(f"**{tonal_number}**")
+    centered_column(
+        "Número Tonal",
+        icon1=num_icon,
+        label=str(tonal_number) if tonal_number else None
+    )
 
 with c2:
-    st.caption("Signo del Día")
-    if day_icon:
-        st.image(str(day_icon), use_container_width=True)
-    if day_sign:
-        st.write(f"**{day_sign}**")
+    centered_column(
+        "Signo del Día",
+        icon1=day_icon,
+        label=day_sign
+    )
 
 with c3:
-    st.caption("Portador del Año")
-    if yb_num_icon:
-        st.image(str(yb_num_icon), use_container_width=True)
-    if yb_sign_icon:
-        st.image(str(yb_sign_icon), use_container_width=True)
-    if year_bearer:
-        st.write(f"**{year_bearer}**")
+    centered_column(
+        "Portador del Año",
+        icon1=yb_num_icon,
+        icon2=yb_sign_icon,
+        label=year_bearer
+    )
+
+st.markdown("</div>", unsafe_allow_html=True)
+# --- Red Codex Frame End ---
 
 st.divider()
 
@@ -162,7 +195,7 @@ if result.get("xiuhmolpilli_year") is not None:
 aspects.append(("Número Tonal", tonal_number))
 aspects.append(("Signo del Día", day_sign))
 
-if not is_nemontemi:
+if not result.get("is_nemontemi"):
     aspects.append(("Trecena", result.get("trecena")))
     aspects.append(("Veintena", result.get("veintena")))
     aspects.append(("Día en Veintena", result.get("dia_en_veintena")))
