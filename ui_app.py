@@ -5,38 +5,16 @@ from datetime import datetime, date
 from zoneinfo import ZoneInfo
 
 from tonalpohualli.core import calculate_date
-
-_ROMAN = {1: "I", 2: "II", 3: "III", 4: "IV", 5: "V"}
-
-def _nemontemi_label(result: dict) -> str:
-    n = result.get("nemontemi_number")
-    return f"Nemontemi {_ROMAN.get(n, '')}".strip()
-
-def _is_blank(value) -> bool:
-    """Hide placeholders that don't add value to the UI."""
-    if value is None:
-        return True
-    if isinstance(value, str):
-        v = value.strip()
-        if v == "":
-            return True
-        if v.lower() in {"n/a", "na", "none", "ninguno", "nunguno", "unknown"}:
-            return True
-    return False
-
-
-def _fmt(value):
-    """User-friendly formatting for common types."""
-    if isinstance(value, (list, tuple)):
-        # Render lists as a clean comma-separated string
-        return ", ".join(str(x) for x in value if not _is_blank(x))
-    return value
-
+from tonalpohualli.icons import (
+    find_day_sign_icon,
+    find_numeral_icon,
+    parse_year_bearer,
+)
 
 st.set_page_config(
     page_title="Tonalpohualli Diario",
     page_icon="🌞",
-    layout="centered",
+    layout="centered"
 )
 
 st.title("🌞 Tonalpohualli Diario")
@@ -44,15 +22,13 @@ st.caption("Lectura diaria estilo ‘horóscopo’ + búsqueda por fecha.")
 
 st.sidebar.header("Consulta")
 
-# Timezone selector
 timezone = st.sidebar.selectbox(
     "Zona horaria",
     ["America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles", "UTC"],
-    index=0,
+    index=0
 )
 today_local = datetime.now(ZoneInfo(timezone)).date()
 
-# Date selection
 if st.sidebar.button("📅 Hoy"):
     selected_date = today_local
 else:
@@ -64,80 +40,82 @@ else:
     )
 
 result = calculate_date(selected_date)
-is_nemontemi = result.get("day_sign") == "Nemontemi" or result.get("is_nemontemi") is True
 
-# Header row
-left, right = st.columns([2, 1])
-with left:
-    st.subheader("Lectura del Día")
-    st.write(f"**Fecha:** {selected_date.isoformat()}")
-with right:
-    st.write("\n")
-    st.write(f"**Zona horaria:** {timezone}")
+st.subheader("Lectura del Día")
+
+# ---------- ICON STRIP ----------
+day_sign = result.get("day_sign")
+tonal_number = result.get("tonal_number")
+year_bearer = result.get("year_bearer")
+
+is_nemontemi = (day_sign == "Nemontemi") or (result.get("is_nemontemi") is True)
+
+# Resolve icon paths safely (won't crash if missing)
+num_icon = find_numeral_icon(tonal_number)
+day_icon = find_day_sign_icon(day_sign)
+
+yb_num, yb_sign = parse_year_bearer(year_bearer)
+yb_sign_icon = find_day_sign_icon(yb_sign) if yb_sign else None
+yb_num_icon = find_numeral_icon(yb_num) if yb_num else None
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    st.caption("Número Tonal")
+    if num_icon:
+        st.image(str(num_icon), use_container_width=True)
+    st.write(f"**{tonal_number}**" if tonal_number else "")
+
+with c2:
+    st.caption("Signo del Día")
+    if day_icon:
+        st.image(str(day_icon), use_container_width=True)
+    st.write(f"**{day_sign}**" if day_sign else "")
+
+with c3:
+    st.caption("Portador del Año")
+    # Optional: show both numeral+sign icons stacked if you have both
+    if yb_num_icon:
+        st.image(str(yb_num_icon), use_container_width=True)
+    if yb_sign_icon:
+        st.image(str(yb_sign_icon), use_container_width=True)
+    st.write(f"**{year_bearer}**" if year_bearer else "")
+
+st.divider()
+# ---------- END ICON STRIP ----------
+
+aspects = []
+
+# Fecha + contexto
+aspects.append(("Fecha Gregoriana", result.get("gregorian_date")))
+aspects.append(("Zona horaria", timezone))
+aspects.append(("Portador del Año", year_bearer))
+
+if result.get("xiuhmolpilli_year") is not None:
+    aspects.append(("Atadura de los Años", f"{result['xiuhmolpilli_year']} de 52"))
+
+# Núcleo diario
+aspects.append(("Número Tonal", tonal_number))
+aspects.append(("Signo del Día", day_sign))
 
 if is_nemontemi:
-    st.info("Día **Nemontemi**: se ocultan campos de **Veintena** porque no aplican.")
+    # En nemontemi normalmente casi todo se oculta; dejo solo lo que ya estás usando.
+    aspects.append(("Regente del Numeral", result.get("regente_del_numeral")))
+    aspects.append(("Volátil", result.get("volatil")))
+    aspects.append(("Regente del Año", result.get("annual_regent_god")))
 else:
-    st.caption("Trecena → Veintena → Regencias")
+    aspects.append(("Trecena", result.get("trecena")))
+    aspects.append(("Veintena", result.get("veintena")))
+    aspects.append(("Día en Veintena", result.get("dia_en_veintena")))
+    aspects.append(("Regente del Numeral", result.get("regente_del_numeral")))
+    aspects.append(("Volátil", result.get("volatil")))
+    aspects.append(("Regente del Día", result.get("day_god")))
+    aspects.append(("Señor de la Noche", result.get("lord_of_night")))
+    aspects.append(("Regente de la Trecena", result.get("trecena_ruling_god")))
+    aspects.append(("Regente de la Veintena", result.get("veintena_ruling_god")))
+    aspects.append(("Regente del Año", result.get("annual_regent_god")))
 
-# --- Contexto anual ---
-st.markdown("### Contexto anual")
-ctx_items = [
-    ("Portador del Año", result.get("year_bearer")),
-    (
-        "Atadura de los Años",
-        f"{result['xiuhmolpilli_year']} de 52"
-        if result.get("xiuhmolpilli_year") is not None
-        else None,
-    ),
-    ("Regente del Año", result.get("annual_regent_god")),
-]
-for label, value in ctx_items:
-    value = _fmt(value)
-    if _is_blank(value):
+for label, value in aspects:
+    if value is None:
         continue
     st.write(f"**{label}:** {value}")
-
-# --- Núcleo tonal / diario ---
-st.markdown("### Tonalpohualli")
-
-if is_nemontemi:
-    st.write(f"**Signo del Día:** {_nemontemi_label(result)}")
-else:
-    st.write(f"**Número Tonal:** {result.get('tonal_number')}")
-    st.write(f"**Signo del Día:** {result.get('day_sign')}")
-
-
-# --- Ciclos y regencias ---
-st.markdown("### Ciclos y regencias")
-
-if is_nemontemi:
-    items = [
-        ("Regente del Numeral", result.get("regente_del_numeral")),
-        ("Volátil", result.get("volatil")),
-    ]
-else:
-    items = [
-        ("Trecena", result.get("trecena")),
-        ("Veintena", result.get("veintena")),
-        ("Día en Veintena", result.get("dia_en_veintena")),
-        # Order requested: Numeral + Volátil before Regente del Día
-        ("Regente del Numeral", result.get("regente_del_numeral")),
-        ("Volátil", result.get("volatil")),
-        ("Regente del Día", result.get("day_god")),
-        ("Señor de la Noche", result.get("lord_of_night")),
-        ("Regente de la Trecena", result.get("trecena_ruling_god")),
-        ("Regente de la Veintena", result.get("veintena_ruling_god")),
-    ]
-
-for label, value in items:
-    value = _fmt(value)
-    if _is_blank(value):
-        continue
-    st.write(f"**{label}:** {value}")
-
-with st.expander("Detalles técnicos", expanded=False):
-    st.write("Estos campos ayudan a depurar cálculos (si los necesitas).")
-    st.write(f"**Fecha Gregoriana (resultado):** {result.get('gregorian_date')}")
-    if result.get("years_since_anchor") is not None:
-        st.write(f"**Años desde ancla:** {result.get('years_since_anchor')}")
