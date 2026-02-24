@@ -22,29 +22,32 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# BACKGROUND (TILED STUCCO)
+# BACKGROUND (TILED STUCCO) + CODEX STRIP STYLES
 # -------------------------------------------------
 
-def set_background():
+def set_styles():
     bg_path = Path("assets/backgrounds/stucco.png")
+    bg_css = ""
 
-    if not bg_path.exists():
-        return
+    if bg_path.exists():
+        with open(bg_path, "rb") as f:
+            encoded = base64.b64encode(f.read()).decode()
 
-    with open(bg_path, "rb") as f:
-        encoded = base64.b64encode(f.read()).decode()
+        bg_css = f"""
+        .stApp {{
+            background-image:
+                linear-gradient(rgba(250,244,228,0.88), rgba(250,244,228,0.88)),
+                url("data:image/png;base64,{encoded}");
+            background-size: 800px;
+            background-repeat: repeat;
+            background-attachment: fixed;
+            background-position: top left;
+        }}
+        """
 
     css = f"""
     <style>
-    .stApp {{
-        background-image: 
-            linear-gradient(rgba(250,244,228,0.88), rgba(250,244,228,0.88)),
-            url("data:image/png;base64,{encoded}");
-        background-size: 800px;
-        background-repeat: repeat;
-        background-attachment: fixed;
-        background-position: top left;
-    }}
+    {bg_css}
 
     .block-container {{
         background-color: rgba(255,248,235,0.95);
@@ -60,12 +63,47 @@ def set_background():
     .stMarkdown {{
         color: #2f2a23;
     }}
+
+    /* ---- CODEX GLYPH STRIP (the block RIGHT AFTER #glyph-strip-anchor) ---- */
+    #glyph-strip-anchor + div [data-testid="stHorizontalBlock"] {{
+        border: 5px solid #8b1e1e;
+        border-radius: 6px;
+        padding: 18px 10px;
+        background-color: rgba(255,245,230,0.55);
+        margin-top: 8px;
+        margin-bottom: 18px;
+    }}
+
+    /* Vertical dividers between the 3 columns */
+    #glyph-strip-anchor + div [data-testid="stHorizontalBlock"] > div {{
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }}
+
+    #glyph-strip-anchor + div [data-testid="stHorizontalBlock"] > div:nth-child(2),
+    #glyph-strip-anchor + div [data-testid="stHorizontalBlock"] > div:nth-child(3) {{
+        border-left: 3px solid #8b1e1e;
+    }}
+
+    /* Slightly soften captions */
+    .codex-caption {{
+        text-align: center;
+        font-size: 0.95rem;
+        color: #6b5a44;
+        margin-bottom: 8px;
+    }}
+
+    .codex-label {{
+        text-align: center;
+        font-weight: 600;
+        margin-top: 8px;
+    }}
     </style>
     """
 
     st.markdown(css, unsafe_allow_html=True)
 
-set_background()
+set_styles()
 
 # -------------------------------------------------
 # TITLE
@@ -101,7 +139,7 @@ else:
 result = calculate_date(selected_date)
 
 # -------------------------------------------------
-# GLYPH STRIP WITH CODEX FRAME
+# GLYPH STRIP (CENTERED) + CODEX BORDER VIA CSS
 # -------------------------------------------------
 
 st.subheader("Lectura del Día")
@@ -117,24 +155,13 @@ yb_num, yb_sign = parse_year_bearer(year_bearer)
 yb_sign_icon = find_day_sign_icon(yb_sign) if yb_sign else None
 yb_num_icon = find_numeral_icon(yb_num) if yb_num else None
 
-# --- Red Codex Frame Start ---
-st.markdown("""
-<div style="
-    border: 6px solid #8b1e1e;
-    padding: 25px 10px;
-    border-radius: 6px;
-    margin-bottom: 25px;
-    background-color: rgba(255,245,230,0.6);
-">
-""", unsafe_allow_html=True)
+# Anchor: CSS styles the next horizontal block (the columns)
+st.markdown("<div id='glyph-strip-anchor'></div>", unsafe_allow_html=True)
 
 c1, c2, c3 = st.columns(3, gap="large")
 
 def centered_column(title, icon1=None, icon2=None, label=None):
-    st.markdown(
-        f"<div style='text-align:center; font-size:0.95rem; color:#6b5a44; margin-bottom:8px;'>{title}</div>",
-        unsafe_allow_html=True
-    )
+    st.markdown(f"<div class='codex-caption'>{title}</div>", unsafe_allow_html=True)
 
     if icon1:
         st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
@@ -147,10 +174,7 @@ def centered_column(title, icon1=None, icon2=None, label=None):
         st.markdown("</div>", unsafe_allow_html=True)
 
     if label:
-        st.markdown(
-            f"<div style='text-align:center; font-weight:600; margin-top:8px;'>{label}</div>",
-            unsafe_allow_html=True
-        )
+        st.markdown(f"<div class='codex-label'>{label}</div>", unsafe_allow_html=True)
 
 with c1:
     centered_column(
@@ -174,9 +198,6 @@ with c3:
         label=year_bearer
     )
 
-st.markdown("</div>", unsafe_allow_html=True)
-# --- Red Codex Frame End ---
-
 st.divider()
 
 # -------------------------------------------------
@@ -184,7 +205,6 @@ st.divider()
 # -------------------------------------------------
 
 aspects = []
-
 aspects.append(("Fecha Gregoriana", result.get("gregorian_date")))
 aspects.append(("Zona horaria", timezone))
 aspects.append(("Portador del Año", year_bearer))
