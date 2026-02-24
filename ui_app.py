@@ -22,16 +22,30 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# STYLES: BACKGROUND + CODEX STRIP FRAME
+# HELPERS
 # -------------------------------------------------
 
+def img_to_data_uri(path: Path | None) -> str | None:
+    """Return a data URI for a local image (png/jpg)."""
+    if not path or not Path(path).exists():
+        return None
+
+    p = Path(path)
+    ext = p.suffix.lower().replace(".", "")
+    if ext == "jpg":
+        ext = "jpeg"
+
+    data = p.read_bytes()
+    b64 = base64.b64encode(data).decode("utf-8")
+    return f"data:image/{ext};base64,{b64}"
+
+
 def set_styles():
+    # Background
     bg_path = Path("assets/backgrounds/stucco.png")
     bg_css = ""
-
     if bg_path.exists():
-        with open(bg_path, "rb") as f:
-            encoded = base64.b64encode(f.read()).decode()
+        encoded = base64.b64encode(bg_path.read_bytes()).decode()
 
         bg_css = f"""
         .stApp {{
@@ -60,61 +74,60 @@ def set_styles():
         color: #5a3b1e;
     }}
 
-    /* ---- CODEX STRIP FRAME ----
-       We drop an invisible anchor DIV with id="glyph-strip-anchor".
-       Then we style the FIRST horizontal block (columns) that appears AFTER it.
-       Streamlit's DOM varies, so we include a primary + fallback selector.
-    */
-
-    /* Primary selector (newer streamlit builds) */
-    #glyph-strip-anchor ~ div:has([data-testid="stHorizontalBlock"]) [data-testid="stHorizontalBlock"] {{
+    /* --- CODEX GLYPH STRIP --- */
+    .codex-strip {{
         border: 5px solid #8b1e1e;
         border-radius: 6px;
-        padding: 18px 10px;
+        padding: 18px 14px;
         background-color: rgba(255,245,230,0.55);
-        margin-top: 10px;
+        margin-top: 12px;
         margin-bottom: 18px;
+
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0px;
     }}
 
-    /* Fallback selector (older builds): style the next few blocks after anchor */
-    #glyph-strip-anchor ~ div [data-testid="stHorizontalBlock"] {{
-        border: 5px solid #8b1e1e;
-        border-radius: 6px;
-        padding: 18px 10px;
-        background-color: rgba(255,245,230,0.55);
-        margin-top: 10px;
-        margin-bottom: 18px;
+    .codex-cell {{
+        padding: 8px 14px 10px 14px;
+        text-align: center;
     }}
 
-    /* Vertical dividers between the 3 columns */
-    #glyph-strip-anchor ~ div [data-testid="stHorizontalBlock"] > div:nth-child(2),
-    #glyph-strip-anchor ~ div [data-testid="stHorizontalBlock"] > div:nth-child(3) {{
+    .codex-cell + .codex-cell {{
         border-left: 3px solid #8b1e1e;
     }}
 
-    /* Column padding so dividers don't touch content */
-    #glyph-strip-anchor ~ div [data-testid="stHorizontalBlock"] > div {{
-        padding-left: 14px;
-        padding-right: 14px;
-    }}
-
-    /* Captions + labels */
-    .codex-caption {{
-        text-align: center;
+    .codex-title {{
         font-size: 0.95rem;
         color: #6b5a44;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }}
 
     .codex-label {{
-        text-align: center;
         font-weight: 600;
-        margin-top: 8px;
+        margin-top: 10px;
+        color: #2f2a23;
+    }}
+
+    .codex-img {{
+        width: 130px;
+        height: auto;
+        image-rendering: auto;
+        display: block;
+        margin: 0 auto;
+    }}
+
+    .codex-stack {{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
     }}
     </style>
     """
-
     st.markdown(css, unsafe_allow_html=True)
+
 
 set_styles()
 
@@ -152,7 +165,7 @@ else:
 result = calculate_date(selected_date)
 
 # -------------------------------------------------
-# GLYPH STRIP
+# GLYPH STRIP (PURE HTML GRID = STABLE)
 # -------------------------------------------------
 
 st.subheader("Lectura del Día")
@@ -168,35 +181,42 @@ yb_num, yb_sign = parse_year_bearer(year_bearer)
 yb_sign_icon = find_day_sign_icon(yb_sign) if yb_sign else None
 yb_num_icon = find_numeral_icon(yb_num) if yb_num else None
 
-# Anchor: CSS applies border to the columns block after this anchor
-st.markdown("<div id='glyph-strip-anchor'></div>", unsafe_allow_html=True)
+num_uri = img_to_data_uri(Path(num_icon)) if num_icon else None
+day_uri = img_to_data_uri(Path(day_icon)) if day_icon else None
+yb_num_uri = img_to_data_uri(Path(yb_num_icon)) if yb_num_icon else None
+yb_sign_uri = img_to_data_uri(Path(yb_sign_icon)) if yb_sign_icon else None
 
-c1, c2, c3 = st.columns(3, gap="large")
+def img_html(uri: str | None) -> str:
+    if not uri:
+        return ""
+    return f"<img class='codex-img' src='{uri}' />"
 
-def centered_column(title, icon1=None, icon2=None, label=None):
-    st.markdown(f"<div class='codex-caption'>{title}</div>", unsafe_allow_html=True)
+strip_html = f"""
+<div class="codex-strip">
+  <div class="codex-cell">
+    <div class="codex-title">Número Tonal</div>
+    {img_html(num_uri)}
+    <div class="codex-label">{tonal_number if tonal_number else ""}</div>
+  </div>
 
-    if icon1:
-        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-        st.image(str(icon1), width=130)
-        st.markdown("</div>", unsafe_allow_html=True)
+  <div class="codex-cell">
+    <div class="codex-title">Signo del Día</div>
+    {img_html(day_uri)}
+    <div class="codex-label">{day_sign if day_sign else ""}</div>
+  </div>
 
-    if icon2:
-        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-        st.image(str(icon2), width=130)
-        st.markdown("</div>", unsafe_allow_html=True)
+  <div class="codex-cell">
+    <div class="codex-title">Portador del Año</div>
+    <div class="codex-stack">
+      {img_html(yb_num_uri)}
+      {img_html(yb_sign_uri)}
+    </div>
+    <div class="codex-label">{year_bearer if year_bearer else ""}</div>
+  </div>
+</div>
+"""
 
-    if label:
-        st.markdown(f"<div class='codex-label'>{label}</div>", unsafe_allow_html=True)
-
-with c1:
-    centered_column("Número Tonal", icon1=num_icon, label=str(tonal_number) if tonal_number else None)
-
-with c2:
-    centered_column("Signo del Día", icon1=day_icon, label=day_sign)
-
-with c3:
-    centered_column("Portador del Año", icon1=yb_num_icon, icon2=yb_sign_icon, label=year_bearer)
+st.markdown(strip_html, unsafe_allow_html=True)
 
 st.divider()
 
