@@ -22,7 +22,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# BACKGROUND (TILED STUCCO) + CODEX STRIP STYLES
+# STYLES: BACKGROUND + CODEX STRIP FRAME
 # -------------------------------------------------
 
 def set_styles():
@@ -60,32 +60,45 @@ def set_styles():
         color: #5a3b1e;
     }}
 
-    .stMarkdown {{
-        color: #2f2a23;
-    }}
+    /* ---- CODEX STRIP FRAME ----
+       We drop an invisible anchor DIV with id="glyph-strip-anchor".
+       Then we style the FIRST horizontal block (columns) that appears AFTER it.
+       Streamlit's DOM varies, so we include a primary + fallback selector.
+    */
 
-    /* ---- CODEX GLYPH STRIP (the block RIGHT AFTER #glyph-strip-anchor) ---- */
-    #glyph-strip-anchor + div [data-testid="stHorizontalBlock"] {{
+    /* Primary selector (newer streamlit builds) */
+    #glyph-strip-anchor ~ div:has([data-testid="stHorizontalBlock"]) [data-testid="stHorizontalBlock"] {{
         border: 5px solid #8b1e1e;
         border-radius: 6px;
         padding: 18px 10px;
         background-color: rgba(255,245,230,0.55);
-        margin-top: 8px;
+        margin-top: 10px;
+        margin-bottom: 18px;
+    }}
+
+    /* Fallback selector (older builds): style the next few blocks after anchor */
+    #glyph-strip-anchor ~ div [data-testid="stHorizontalBlock"] {{
+        border: 5px solid #8b1e1e;
+        border-radius: 6px;
+        padding: 18px 10px;
+        background-color: rgba(255,245,230,0.55);
+        margin-top: 10px;
         margin-bottom: 18px;
     }}
 
     /* Vertical dividers between the 3 columns */
-    #glyph-strip-anchor + div [data-testid="stHorizontalBlock"] > div {{
-        padding-top: 6px;
-        padding-bottom: 6px;
-    }}
-
-    #glyph-strip-anchor + div [data-testid="stHorizontalBlock"] > div:nth-child(2),
-    #glyph-strip-anchor + div [data-testid="stHorizontalBlock"] > div:nth-child(3) {{
+    #glyph-strip-anchor ~ div [data-testid="stHorizontalBlock"] > div:nth-child(2),
+    #glyph-strip-anchor ~ div [data-testid="stHorizontalBlock"] > div:nth-child(3) {{
         border-left: 3px solid #8b1e1e;
     }}
 
-    /* Slightly soften captions */
+    /* Column padding so dividers don't touch content */
+    #glyph-strip-anchor ~ div [data-testid="stHorizontalBlock"] > div {{
+        padding-left: 14px;
+        padding-right: 14px;
+    }}
+
+    /* Captions + labels */
     .codex-caption {{
         text-align: center;
         font-size: 0.95rem;
@@ -139,7 +152,7 @@ else:
 result = calculate_date(selected_date)
 
 # -------------------------------------------------
-# GLYPH STRIP (CENTERED) + CODEX BORDER VIA CSS
+# GLYPH STRIP
 # -------------------------------------------------
 
 st.subheader("Lectura del Día")
@@ -155,7 +168,7 @@ yb_num, yb_sign = parse_year_bearer(year_bearer)
 yb_sign_icon = find_day_sign_icon(yb_sign) if yb_sign else None
 yb_num_icon = find_numeral_icon(yb_num) if yb_num else None
 
-# Anchor: CSS styles the next horizontal block (the columns)
+# Anchor: CSS applies border to the columns block after this anchor
 st.markdown("<div id='glyph-strip-anchor'></div>", unsafe_allow_html=True)
 
 c1, c2, c3 = st.columns(3, gap="large")
@@ -177,26 +190,13 @@ def centered_column(title, icon1=None, icon2=None, label=None):
         st.markdown(f"<div class='codex-label'>{label}</div>", unsafe_allow_html=True)
 
 with c1:
-    centered_column(
-        "Número Tonal",
-        icon1=num_icon,
-        label=str(tonal_number) if tonal_number else None
-    )
+    centered_column("Número Tonal", icon1=num_icon, label=str(tonal_number) if tonal_number else None)
 
 with c2:
-    centered_column(
-        "Signo del Día",
-        icon1=day_icon,
-        label=day_sign
-    )
+    centered_column("Signo del Día", icon1=day_icon, label=day_sign)
 
 with c3:
-    centered_column(
-        "Portador del Año",
-        icon1=yb_num_icon,
-        icon2=yb_sign_icon,
-        label=year_bearer
-    )
+    centered_column("Portador del Año", icon1=yb_num_icon, icon2=yb_sign_icon, label=year_bearer)
 
 st.divider()
 
