@@ -3,6 +3,7 @@ from datetime import datetime, date
 from zoneinfo import ZoneInfo
 import base64
 from pathlib import Path
+from typing import Optional
 
 from tonalpohualli.core import calculate_date
 from tonalpohualli.icons import (
@@ -25,7 +26,7 @@ st.set_page_config(
 # HELPERS
 # -------------------------------------------------
 
-def img_to_data_uri(path: Path | None) -> str | None:
+def img_to_data_uri(path: Optional[Path]) -> Optional[str]:
     """Return a data URI for a local image (png/jpg)."""
     if not path or not Path(path).exists():
         return None
@@ -204,7 +205,7 @@ day_uri = img_to_data_uri(Path(day_icon)) if day_icon else None
 yb_num_uri = img_to_data_uri(Path(yb_num_icon)) if yb_num_icon else None
 yb_sign_uri = img_to_data_uri(Path(yb_sign_icon)) if yb_sign_icon else None
 
-def img_html(uri: str | None) -> str:
+def img_html(uri: Optional[str]) -> str:
     if not uri:
         return ""
     return f"<img class='codex-img' src='{uri}' />"
